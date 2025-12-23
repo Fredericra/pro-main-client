@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+
+@layer components {
+    .btn {
+        @apply bg-blue-500 w-full text-white font-serif hover:rounded-2xl cursor-pointer py-1 px-2 mt-5 hover:bg-blue-950 rounded duration-1000;
+    }
+    .dash-menu{
+        @apply text-white flex items-center space-x-1 hover:text-amber-700 duration-1000;
+    }
+    .titre{
+        @apply text-2xl font-bold text-indigo-800;
+    }
+    
+}
+
+@layer utilities {
+    .bg-gradient-to-r {
+        @apply bg-gradient-to-r from-blue-500 to-green-500;
+    }
+    .link{
+        @apply text-[22px] text-center font-bold text-indigo-950 hover:text-indigo-800 hover:translate-y-1 transition-all duration-500;
+    }
+   
+}
+
+@layer base {
+    body {
+        @apply bg-gradient-to-r from-blue-900 to-purple-600;
+    }
+    
+    input[type="file"]::file-selector-button{
+        background: #2c7be5;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        font-size: 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        content: "Uploader..."; 
+    }
+}
