@@ -3,11 +3,12 @@ import Input from '../../Components/Input.vue';
 import { onMounted, reactive, ref } from 'vue';
 import type { confirm, User, Validation } from '../../Type';
 import { CircleCheckFilled, User as Users } from '@element-plus/icons-vue';
-import { useRouter } from 'vuetify/lib/composables/router.mjs';
 import { userStore } from '../../Auth/Store';
+import { useRouter } from 'vue-router';
 
 const store = userStore()
 const route = useRouter()
+const loading = ref<boolean>(false)
 const form = reactive<confirm>({
     confirm:''
 })
@@ -21,8 +22,10 @@ const confirmCount = async() => {
        const res = await store.confirm(form) 
        if(res.status)
        {
-          await store.setAuth(res.data as User)
-          route?.push({name:'Dash'})
+          loading.value = true
+          await store.checkAuth()
+          route.push({name:'Dash'})
+          loading.value = false
        }
        if(res.field === 'error' && confirm.value) confirm.value.error = res.message as string;
 
@@ -69,6 +72,7 @@ onMounted(async()=>{
           </div>
           <div>
             <el-button
+              v-loading.fullscreen.lock="loading"
               @click="confirmCount"
               type="submit"
               :class="users?.set?.code===form.confirm?'!bg-blue-500':'!bg-red-600'"

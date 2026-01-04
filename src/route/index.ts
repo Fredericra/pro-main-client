@@ -1,9 +1,5 @@
 import { createRouter,createMemoryHistory } from "vue-router";
 import middleware from "../Auth/middleware"
-import { userStore } from "../Auth/Store";
-
-
-const store = userStore()
 
 const routes = [
     {name:"Home",path:"/",component:()=>import("../Page/Home.vue")},

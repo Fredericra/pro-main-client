@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Input from '../../Components/Input.vue';
 import { reactive, ref } from 'vue';
-import type { login, User, Validation } from '../../Type';
+import type { login, Validation } from '../../Type';
 import { Lock, Message } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { userStore } from '../../Auth/Store';
