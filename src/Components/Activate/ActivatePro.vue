@@ -64,25 +64,20 @@ onMounted(async () => {
 
   for (let i of res) {
     const name = i.name;
-    country.value?.push({ value: name, label: name })
+    country.value?.push({ value: name, label: name, isoCode: i.isoCode })
   }
 
 })
 
-watch(() => form.country, async () => {
-  dataCity.value = [];
-  const countrys = await store.getCountry();
-  const select = countrys.find((value) => value.name === form.country);
-  phoneCode.value = select?.phonecode as string;
-  const citys = await store.getCity(select?.isoCode as string);
-  for (let i of citys) {
-    const name = i.name;
-    dataCity.value.push({ value: name, label: name })
+const search = async(value:string|number)=>{
+  dataCity.value = []
+  const findCity = country.value?.find(i=>i.value === value)
+  const cities = await store.getCity(findCity?.isoCode as string)
+  for(let i of cities){
+    dataCity.value.push({label:i.name,value:i.name})
   }
-})
-watch(() => form.city, () => {
-  suffixCity.value = form.city
-})
+}
+
 </script>
 <template>
   <div class="p-8 card" v-loading.fullscreen.lock="loading">
@@ -99,7 +94,7 @@ watch(() => form.city, () => {
           message="veuille entre votre pays" placeholder="entre votre pays" />
       </div>
       <div>
-        <Select ref="city" v-model="form.city" :value="dataCity" :show-error="true" message="veuillez votre ville"
+        <Select ref="city" @change="search" v-model="form.city" :value="dataCity" :show-error="true" message="veuillez votre ville"
           placeholder="selectionner votre ville" />
       </div>
       <div>

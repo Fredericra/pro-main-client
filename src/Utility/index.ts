@@ -12,13 +12,21 @@ const decryptData = (encryptedData:any):any=>{
     return crypto.decrypt(encryptedData);
 }
 
-const file = (files:any,max:number)=>{
+const file = (files:any,max:number,length?:number):boolean=>{
     if(files)
     {
         const maxs = max * 1024 * 1024
-        const newform = files as File
-        if(newform.size>maxs) return false;
-        return true
+        const newform = files as File[] | File
+        console.log(newform)
+        if(Array.isArray(newform))
+        {
+            if(length && newform.length>length)return false;
+            return newform.every((i)=>{if(i.size>maxs) return false;return true})
+        }
+        else{
+            if(newform.size>maxs) return false;
+            return true
+        }
     }
     return false
 }

@@ -11,11 +11,14 @@ const props = defineProps<{
 const modelValue = defineModel<File|File[]|null>()
 const error = ref<string>('');
 const files = ref<File[]|null>(null)
+const emit = defineEmits<{
+    (e:'upload',value:File|File[]|null):void
+}>()
 const Validate = (e:Event)=>{
     const target = e.target as HTMLInputElement;
     const selectFile = target.files ? Array.from(target.files):null;
     files.value = selectFile;
-
+  emit('upload',selectFile!==null?selectFile:null)
     if(!selectFile || selectFile.length === 0)
     {
         modelValue.value = null;

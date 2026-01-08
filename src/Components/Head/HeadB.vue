@@ -15,18 +15,19 @@ import {
 } from "@element-plus/icons-vue";
 import { userStore } from "../../Auth/Store";
 import type { setPro, User } from "../../Type";
-import { useRoute, useRouter } from "vue-router";
-import { ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import { ref} from "vue";
 
 
-const routeParams = useRoute()
 const store = userStore();
 const profile = ref<setPro|null>(null)
 const loading =ref<boolean>(false)
 const props = defineProps<{
   user: User;
+  profile: setPro|null;
 }>();
 const route = useRouter();
+
 const LoginOut = async () => {
   loading.value = true
   localStorage.removeItem("token");
@@ -36,10 +37,6 @@ const LoginOut = async () => {
   loading.value = false
 };
 
-
-watch(()=>routeParams.name,async()=>{
-  profile.value = await store.getPro()
-})
 
 </script>
 <template>
@@ -97,7 +94,7 @@ watch(()=>routeParams.name,async()=>{
     </el-col>
     <el-col :xs="24" :md="8" class="">
       <div class="flex justify-end space-x-5 mx-4 items-center">
-        <div v-if="profile!==null">
+        <div v-if="props.profile!==null">
           
         </div>
         <div class="space-x-4">
@@ -118,13 +115,13 @@ watch(()=>routeParams.name,async()=>{
           </router-link>
         </div>
         <el-dropdown class="">
-          <span class="el-dropdown-link" v-if="profile===null">
+          <span class="el-dropdown-link" v-if="props.profile===null">
             <el-icon class="!text-white">
               <UserIcon />
             </el-icon>
           </span>
            <span class="el-dropdown-link" v-else>
-            <el-avatar :src="profile.set?.link" :size="20"></el-avatar>
+            <el-avatar :src="props.profile.set?.link" :size="20"></el-avatar>
           </span>
           <template #dropdown>
             <el-dropdown-item @click="LoginOut" v-loading.fullscreen.lock="loading">

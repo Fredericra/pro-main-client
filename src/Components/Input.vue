@@ -4,6 +4,8 @@ import { ref, watch, type Component } from "vue";
 const model = defineModel<string | number | boolean>();
 const error = ref<string>("");
 const props = defineProps<{
+  style?:string;
+  rows?:number;
   prefixe?: Component|string;
   suffix?: Component|string;
   type?: string;
@@ -27,7 +29,7 @@ const props = defineProps<{
 }>();
 function validate() {
   error.value = "";
-  const value = String(model.value);
+  const value = model.value as any;
   if (value === "") {
     error.value = props.message || "Ce champ est requis";
     return;
@@ -48,9 +50,9 @@ function validate() {
       return;
     }
   }
-  if (props.type && props.type === "number") {
-    const numberValue = Number(value);
-    if (isNaN(numberValue)) {
+  if (props.type && props.type==="number") {
+    const numberValue = typeof value === "number"?true:false;
+    if (numberValue) {
       error.value = props.message || "Veuillez entrer un nombre valide.";
       return;
     }
@@ -95,6 +97,9 @@ watch(model, () => {
     :placeholder="props.placeholder"
     @input="validate"
     class=""
+    :type="props.type==='textarea'?'textarea':props.type||'text'"
+    :rows="props.type==='textarea'?props.rows:''"
+    :style="props.style"
     clearable
     v-bind="$attrs"
     :show-password="props.type==='password'?true:false"

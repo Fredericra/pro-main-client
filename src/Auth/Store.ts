@@ -1,10 +1,9 @@
-import type { city, confirm, login, resData, setPro, sigin, User } from "../Type";
+import type { city, confirm, Currency, login, resData, select, setPro, sigin, User } from "../Type";
 import api from "../Api/Client";
 import Utility from "../Utility";
 import { defineStore } from "pinia";
 import { City, Country, type ICity, type ICountry } from "country-state-city";
-
-
+import currency from "currency-codes-ts";
 
 export const userStore = defineStore('auths',{
     state:()=>({
@@ -16,7 +15,29 @@ export const userStore = defineStore('auths',{
         isAuth:(state)=>{ return !!state.user },
         users:(state):User|null=>{return state.user},
         IsVerify:(state)=>{ return state.user?state.user.set?.verify:false},
-        viewPro:(state):setPro|null=>{return state.pro}
+        viewPro:(state):setPro|null=>{return state.pro},
+        current:()=>{return currency.data},
+        article:():select[]=>{
+            return [
+                {label:"Informatique",value:"Informatique"},
+                {label:"Bricolage",value:"Bricolage"},
+                {label:"Mode",value:"Mode"},
+                {label:"Maison",value:"Maison"},
+                {label:"Jardinage",value:"Jardinage"},
+                {label:"Sport",value:"Sport"},
+                {label:"Santé et Beauté",value:"Santé et Beauté"},
+                {label:"Automobile",value:"Automobile"},
+                {label:"Jeux et Jouets",value:"Jeux et Jouets"},
+                {label:"Alimentation",value:"Alimentation"},
+                {label:"Livres et Médias",value:"Livres et Médias"},
+                {label:"Musique et Instruments",value:"Musique et Instruments"},
+                {label:"Art et Artisanat",value:"Art et Artisanat"},
+                {label:"Bébés et Enfants",value:"Bébés et Enfants"},
+                {label:"Animaux de Compagnie",value:"Animaux de Compagnie"},
+                {label:"Voyage et Loisirs",value:"Voyage et Loisirs"},
+                {label:"Autres",value:"Autres"},
+            ] as select[];
+        }
     },
     actions:{
         async checkAuth():Promise<User|any>{
@@ -102,6 +123,26 @@ export const userStore = defineStore('auths',{
             {
                 return City.getCitiesOfCountry(country) as ICity[];
             }
+        },
+        async getCurrent():Promise<Currency[]>{
+            return currency.data as any[];
+        },
+        async getSelectCountry():Promise<select[]>{
+            const selectList = []
+            const country = await this.getCountry();
+            for(let x of country){
+                selectList.push({value:x.name,label:x.name,isoCode:x.isoCode})
+            }
+            return selectList ;
+        },
+        async getSelectCity(value:string):Promise<select[]>{
+            const selectList = [];
+            const city = await this.getCity(value);
+            for(let x of city){
+                selectList.push({value:x.name,label:x.name})
+            }
+            return selectList
         }
+      
     }
 })
