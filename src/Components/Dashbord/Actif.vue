@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { Download } from '@element-plus/icons-vue';
 import type { ApexOptions } from 'apexcharts';
 import { ref } from 'vue';
 
