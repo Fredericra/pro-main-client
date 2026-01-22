@@ -1,3 +1,4 @@
+@import "fontawesome-free/css/all.min.css";
 @import "tailwindcss";
 
 
@@ -10,6 +11,9 @@
     }
     .titre{
         @apply text-2xl font-bold text-indigo-800;
+    }
+    .avatar{
+        @apply w-12 h-12 rounded-full border-4 border-indigo-800;
     }
     
 }

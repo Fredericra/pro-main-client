@@ -34,10 +34,7 @@ const deleteSelection = async()=>{
 }
 </script>
 <template>
-    <div class="px-4 border-2 border-blue-400 rounded-md">
-        <div class="text-center">
-            <h2 class="my-5 titre">Liste des Articles</h2>
-        </div>
+    <div class="px-4 mx-4">
         <div>
             <el-table
                 ref="multiple"

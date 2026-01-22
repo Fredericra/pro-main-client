@@ -153,3 +153,33 @@ export interface imgArticle {
   };
   links: string;
 }
+export interface publication {
+  _createdAt: Date;
+  _id: string;
+  _type: string;
+  _updatedAt: Date;
+  title: string;
+  street?:string;
+  pays: string;
+  ville:string;
+  other:[];
+  description: string;
+  code: string;
+  userId: {
+    _ref: string;
+    _type: "reference";
+  };
+  set?: imgPub[];
+}
+
+export interface imgPub {
+  _createdAt: Date;
+  _id: string;
+  _type: string;
+  _updatedAt: Date;
+  publicationId: {
+    _type: "reference";
+    _ref: string;
+  };
+  url: string;
+}

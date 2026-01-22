@@ -19,10 +19,11 @@ const error = ref<string>()
 const validate = (event: string | number) => {
     error.value = ""
     emit('change', event as string | number)
-    if (event === undefined) {
+    if (model.value === "") {
         error.value = props.message || "Veuillez selectionner"
         return;
     }
+    
    
 }
 

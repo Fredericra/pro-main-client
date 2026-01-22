@@ -52,8 +52,6 @@ export const userStore = defineStore('auths',{
                 }
             }catch{
                 this.user = null;
-            }finally{
-                this.auth = true
             }
         },
         async Logout(){

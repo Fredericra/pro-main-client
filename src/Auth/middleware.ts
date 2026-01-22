@@ -6,13 +6,22 @@ import { createPinia } from "pinia";
 const pinia = createPinia();
 const store = userStore(pinia)
 
+const isAuthCheck = async():Promise<boolean>=>{
+    await store.checkAuth();
+    const user = !!store.users
+    if(user){
+        return true
+    }
+    localStorage.removeItem('token')
+    return false
+;}
 
 const Auth = async(
     to: RouteLocationNormalized,
     _: RouteLocationNormalized,
     next: NavigationGuardNext,
 ) => {
-    const auth = !!localStorage.getItem('token')
+    const auth = await isAuthCheck();
    if(auth){
        next()
     }
@@ -26,7 +35,7 @@ const isAuth = async(
     _:RouteLocationNormalized,
     next:NavigationGuardNext
 )=>{
-    const auth = !!localStorage.getItem('token')
+    const auth = await isAuthCheck();
     if(auth){
         next()
     }
@@ -40,11 +49,10 @@ const NeedVerify = async(
     _:RouteLocationNormalized,
     next:NavigationGuardNext,
 )=>{
-    const auth = !!localStorage.getItem('token')
+    const auth = await isAuthCheck();
     if(auth)
     {
-        const user = await store.getUserCheck();
-        if(user?.set?.verify===false) return next({name:'Validate',query:{redirect:to.fullPath}})
+        if(store.users?.set?.verify===false) return next({name:'Validate',query:{redirect:to.fullPath}})
     }
     else{
         return next({name:'Login',query:{redirect:to.fullPath}})
@@ -56,11 +64,10 @@ const isAdmin = async(
     _:RouteLocationNormalized,
     next:NavigationGuardNext
 )=>{
-    const auth = !!localStorage.getItem('token')
+    const auth = await isAuthCheck();
     if(auth)
     {
-        const user = await store.getUserCheck();
-        if(user?.set?.admin) 
+        if(store.users?.set?.admin) 
         {
             next();
         } 

@@ -1,17 +1,21 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import FormPub from '../../Components/Creation/FormPub.vue';
-import type { select } from '../../Type';
-const pub = ref<any[]>([])
+import type { publication, select } from '../../Type';
+import ListPub from '../../Components/Creation/ListPub.vue';
+
+const pub = ref<publication[]>([])
 const props = defineProps<{
     country:select[],
-    pub:any[]
+    pub:publication[]|[]
 }>()
 
-const publication = (value:any[])=>{
-    pub.value = value
+const publication = (pubs:publication[])=>{
+    pub.value = pubs
 }
-
+const update = (pubs:publication[])=>{
+    pub.value = pubs
+}
 onMounted(()=>{
     pub.value = props.pub
 })
@@ -24,7 +28,7 @@ onMounted(()=>{
             @pub="publication"/>
         </el-col>
         <el-col :xs="24" :md="8">
-            {{ pub }}
+            <ListPub :pub="pub" @update="update"/>
         </el-col>
     </el-row>
 </template>

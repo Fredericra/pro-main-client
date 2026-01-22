@@ -17,7 +17,6 @@ const file = (files:any,max:number,length?:number):boolean=>{
     {
         const maxs = max * 1024 * 1024
         const newform = files as File[] | File
-        console.log(newform)
         if(Array.isArray(newform))
         {
             if(length && newform.length>length)return false;

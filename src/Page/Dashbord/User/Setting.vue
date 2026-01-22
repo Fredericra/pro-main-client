@@ -6,7 +6,7 @@ import Profil from '../../Setting/Profil.vue';
 
 </script>
 <template>
-  <el-tabs type="border-card" class="h-full">
+  <el-tabs type="border-card" class="min-h-screen">
     <el-tab-pane label="Acceder Mode Professionel">
         <Pro/>
     </el-tab-pane>
