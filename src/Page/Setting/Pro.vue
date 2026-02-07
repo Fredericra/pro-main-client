@@ -2,28 +2,22 @@
 import { UserFilled } from '@element-plus/icons-vue';
 import ActivatePro from '../../Components/Activate/ActivatePro.vue';
 import NextActivate from '../../Components/Activate/NextActivate.vue';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, } from 'vue';
 import ShowProfile from '../../Components/Activate/ShowProfile.vue';
 import Step from '../../Components/Step.vue';
-import { userStore } from '../../Auth/Store';
+import type { setPro } from '../../Type';
 
-
-const checkPro = ref<boolean>(false)
-const pro = ref<object|null>(null)
+const checkPro = ref<boolean>()
 const actives = ref<number>(0)
-const store = userStore()
 
-onMounted(async()=>{
-    pro.value = await store.getPro()
-    console.log(pro.value)
-})
-watch(()=>store.pro,async()=>{
-    pro.value = await store.getPro()
+const props = defineProps<{
+    pro:setPro|null
+}>()
 
-})
+
 
 const Layout = computed(()=>{
-    checkPro.value = !!pro.value
+    checkPro.value = !!props.pro
    if(checkPro.value){
     actives.value = 1;
     return NextActivate;

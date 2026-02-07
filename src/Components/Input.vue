@@ -5,6 +5,7 @@ const model = defineModel<string | number | boolean>();
 const error = ref<string>("");
 const props = defineProps<{
   style?:string;
+  errortype?:string | 'warning';
   rows?:number;
   prefixe?: Component|string;
   suffix?: Component|string;

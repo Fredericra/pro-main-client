@@ -1,3 +1,4 @@
+
 export interface User {
   _id?: string;
   username?: string;
@@ -24,12 +25,12 @@ export interface User {
 
 export interface resData {
   status: boolean;
-  message?: string;
-  data?: User | {} | object;
-  field?: string;
-  token?: string;
-  verify?: boolean;
-  code?: string;
+  message: string;
+  data: User | {} | object;
+  field: string;
+  token: string;
+  verify: boolean;
+  code: string;
 }
 
 export interface confirm {
@@ -105,6 +106,9 @@ export interface select {
   value: string;
   label: string;
   isoCode?: string;
+  phoneCode?:string;
+  name?:string;
+  flag?:string;
 }
 
 export interface city {
@@ -183,3 +187,61 @@ export interface imgPub {
   };
   url: string;
 }
+
+export interface letter {
+  _createdAt: Date;
+  _id: string;
+  _type: string;
+  _updatedAt: Date;
+  subject: string;
+  type:string;
+  email?: string;
+  message?:string;
+  set?:message[]
+}
+
+export interface message {
+  _createdAt: Date;
+  _id: string;
+  _type: string;
+  _updatedAt: Date;
+  message: string;
+  emailId?: {
+    _ref: string;
+    _type: "reference";
+  };
+}
+
+
+
+
+export interface state {
+  user:User|null;
+  pro:setPro|null;
+  auth:boolean;
+  verify:boolean;
+}
+
+export interface store {
+  article:Article[]|null;
+  pub:publication[]|null;
+  country:select[];
+  city:select[];
+  device:select[];
+  letter:any
+}
+
+
+export interface messageLetter {
+   _createdAt: Date;
+  _id: string;
+  _type: string;
+  _updatedAt: Date;
+  type: string;
+  message:string;
+  userId: {
+    _ref: string;
+    _type: "reference";
+  };
+}
+

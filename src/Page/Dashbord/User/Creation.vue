@@ -5,17 +5,24 @@ import Folio from '../../Creation/Folio.vue';
 import type {  Article as TypeArticle, User, publication, select, setPro } from '../../../Type';
 import { useRoute } from 'vue-router';
 import { CirclePlusFilled, ShoppingTrolley } from '@element-plus/icons-vue';
+import { storeArticle } from '../../../Auth/article';
+import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 
 
-
+const articleStore = storeArticle()
+const {getArticle,getPub,getCountry} = storeToRefs(articleStore)
 const route = useRoute()
 const props = defineProps<{
     pro:setPro|null,
-    article:TypeArticle[],
     user:User,
-    country:select[],
-    pub:publication[]|[]
 }>()
+
+onMounted(async()=>{
+    await articleStore.checkArtcile()
+    await articleStore.checkPub()
+    await articleStore.checkCountrySelect()
+})
 
 </script>
 <template>
@@ -29,8 +36,8 @@ const props = defineProps<{
             </template>
             <Publication 
             :pro="props.pro" 
-            :country="props.country"
-            :pub="props.pub"/>
+            :country="getCountry"
+            :pub="getPub ?? []"/>
         </el-tab-pane>
         <el-tab-pane>
             <template #label>
@@ -41,8 +48,8 @@ const props = defineProps<{
             </template>
             <Article 
             :pro="pro" 
-            :article="props.article" 
-            :country="props.country"/>
+            :article="getArticle" 
+            :country="getCountry"/>
         </el-tab-pane>
         <el-tab-pane label="Porfolio" v-if="props.user?.set?.admin">
             <Folio/>

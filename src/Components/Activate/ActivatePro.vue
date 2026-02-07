@@ -1,13 +1,21 @@
 <script lang="ts" setup>
 import type { pro, select, Validation } from "../../Type";
-import { onMounted, reactive, ref, watch } from "vue";
+import { reactive, ref } from "vue";
 import { userStore } from "../../Auth/Store";
 import Utility from "../../Utility";
 import { Place, User } from "@element-plus/icons-vue";
 import File from "../file.vue";
 import Input from "../Input.vue";
 import Select from "../Select.vue";
+import { storeArticle } from "../../Auth/article";
+import { storeToRefs } from "pinia";
 
+
+const ArticleStore = storeArticle()
+const { country,getCountry,getCity } = storeToRefs(ArticleStore)
+const props = defineProps<{
+  country:select[]
+}>()
 
 const form = reactive<pro>({
   nom: "",
@@ -18,10 +26,9 @@ const form = reactive<pro>({
   file: null,
 });
 
+
 const FileMessage = ref<string|null>(null)
 const suffixCity = ref<string>('')
-const dataCity = ref<select[]>([])
-const country = ref<select[]>([])
 const phoneCode = ref<string>('261')
 const city = ref<Validation>();
 const nom = ref<Validation>();
@@ -49,7 +56,7 @@ const active = async () => {
       loading.value = true
       FileMessage.value = null
       await store.Posting(formUpload, "/Pro");
-      await store.getPro();
+      await store.checkPro();
       loading.value = false
     }
     else {
@@ -58,24 +65,10 @@ const active = async () => {
   }
 };
 
-
-onMounted(async () => {
-  const res = await store.getCountry();
-
-  for (let i of res) {
-    const name = i.name;
-    country.value?.push({ value: name, label: name, isoCode: i.isoCode })
-  }
-
-})
-
 const search = async(value:string|number)=>{
-  dataCity.value = []
-  const findCity = country.value?.find(i=>i.value === value)
-  const cities = await store.getCity(findCity?.isoCode as string)
-  for(let i of cities){
-    dataCity.value.push({label:i.name,value:i.name})
-  }
+  const IsoCode = country.value?.find(i=>i.value === value)
+  phoneCode.value = IsoCode?.phoneCode as string
+  await ArticleStore.checkCitySelect(IsoCode?.isoCode as string)
 }
 
 </script>
@@ -90,11 +83,11 @@ const search = async(value:string|number)=>{
           :suffix="` ${suffixCity ? suffixCity : ''}`" placeholder="entre votre nom place" />
       </div>
       <div>
-        <Select ref="mycountry" v-model="form.country" :value="country" :show-error="true"
+        <Select ref="mycountry" @change="search" v-model="form.country" :value="getCountry" :show-error="true"
           message="veuille entre votre pays" placeholder="entre votre pays" />
       </div>
       <div>
-        <Select ref="city" @change="search" v-model="form.city" :value="dataCity" :show-error="true" message="veuillez votre ville"
+        <Select ref="city" v-model="form.city" :value="getCity" :show-error="true" message="veuillez votre ville"
           placeholder="selectionner votre ville" />
       </div>
       <div>

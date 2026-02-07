@@ -18,6 +18,7 @@ const form = reactive<sigin>({
 
 const store = userStore()
 const route = useRouter()
+const loading = ref<boolean>(false);
 
 const username = ref<Validation | null>(null);
 const lastname = ref<Validation | null>(null);
@@ -34,34 +35,23 @@ const signup = async () => {
   password.value?.validate();
   confirm.value?.validate();
   if (username.value?.error === ""
-  || lastname.value?.error === ""
-  || firstname.value?.error === ""
-  || email.value?.error === ""
-  || password.value?.error === ""
-  || confirm.value?.error === ""
+    || lastname.value?.error === ""
+    || firstname.value?.error === ""
+    || email.value?.error === ""
+    || password.value?.error === ""
+    || confirm.value?.error === ""
   ) {
+    loading.value = true;
     const res = await store.register(form);
-    if(res.status === true)
-    {
-      localStorage.setItem('token',res.token as string);
-      route.push({name:'Validate'})
+    if (res.status) {
+      localStorage.setItem("token", res.token);
+      await store.checkAuth()
+      route.push({ name: "Validate" });
     }
-    else
-    {
-      if(res.field === 'email')
-      {
-        if(email.value) email.value.error = res.message as string;
-        route.push({name:'Login'})
+    loading.value = false;
+    if (res.field === "exist" && email.value) email.value.error = res.message;
+    if (res.field === "error" && email.value) email.value.error = res.message;
 
-      }
-      else{
-        if(username.value) username.value.error = res.message as string;
-        if(firstname.value) firstname.value.error = res.message as string;
-        if(email.value) email.value.error = res.message as string;
-        if(password.value) password.value.error = res.message as string;
-      }
-      
-    }
   }
 };
 
@@ -112,7 +102,9 @@ const signup = async () => {
                 </p>
               </div>
               <div>
-                <el-button type="submit" @click="signup" class="!w-full !text-white !bg-blue-500 !hover:bg-blue-800 !duration-1000">
+                <el-button type="submit" @click="signup"
+                  class="!w-full !text-white !bg-blue-500 !hover:bg-blue-800 !duration-1000"
+                  v-loading.fullscreen.lock="loading">
                   S'inscrire
                 </el-button>
               </div>
@@ -124,4 +116,3 @@ const signup = async () => {
     <el-col :xs="24" :md="8"></el-col>
   </el-row>
 </template>
-

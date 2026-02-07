@@ -3,10 +3,12 @@ import { Handbag, Money, Plus, ShoppingCart, ShoppingCartFull, Ticket } from '@e
 import Input from '../Input.vue';
 import { onMounted, reactive, ref } from 'vue';
 import Select from '../Select.vue';
-import { userStore } from '../../Auth/Store';
 import type { Article, select, setPro, Validation } from '../../Type';
 import File from '../file.vue';
 import Utility from '../../Utility';
+import { storeArticle } from '../../Auth/article';
+import { storeToRefs } from 'pinia';
+import { userStore } from '../../Auth/Store';
 
 const emit = defineEmits<{
     (e:'updateArticle',value:any[]):void
@@ -15,8 +17,9 @@ const props = defineProps<{
     pro: setPro | null,
     country:select[],
 }>();
-const store = userStore()
-const listCurrency = ref<select[]>([])
+const store = userStore();
+const articleSto = storeArticle()
+const { getCurrent } = storeToRefs(articleSto)
 const suffix = ref<string>('')
 const error = ref<string>('');
 const form = reactive<Record<string, string | any>>({
@@ -123,15 +126,7 @@ const changeCurrent = (value: string | number) => {
 }
 
 onMounted(async () => {
-    const current = await store.getCurrent()
-    const country = await store.getCountry()
-    for (let x of current) {
-        const findCountry = country.find(c => c.name === (x.countries)[0])
-        listCurrency.value.push({
-            label: `${x.code} - ${x.currency} - ${findCountry ? findCountry.flag : ''}`,
-            value: x.code
-        })
-    }
+    await articleSto.checkCurrent();
 })
 </script>
 <template>
@@ -155,8 +150,7 @@ onMounted(async () => {
                     <Input ref="model" show-error v-model="form.model" placeholder="model Article" :prefixe="Handbag" />
                 </div>
                 <div class="w-8/12">
-                    <Select ref="category" show-error v-model="form.category as string" :value="store.article as any"
-                        placeholder="Catégorie" />
+                    <Select ref="category" show-error v-model="form.category" :value="store.article" placeholder="Catégorie" />
                 </div>
             </div>
             <div class="flex space-x-2 mx-5">
@@ -171,8 +165,7 @@ onMounted(async () => {
             </div>
             <div class="flex space-x-2 mx-5">
                 <div class="w-4/12">
-                    <Select ref="device" show-error @change="changeCurrent" v-model="form.device as string"
-                        :value="listCurrency" placeholder="Votre devise" />
+                    <Select ref="device" show-error @change="changeCurrent" v-model="form.device":value="getCurrent" placeholder="Votre devise" />
                 </div>
                 <div class="w-full">
                     <Input ref="prix" type="number" show-error v-model="form.price" placeholder="Prix article"

@@ -5,6 +5,5 @@ import { useRoute } from 'vue-router';
 </script>
 <template>
     <div>
-        {{ route.meta.pro }}
     </div>
 </template>

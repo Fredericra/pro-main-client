@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import type { Validation } from '../../Type';
+import type { User as Users, Validation } from '../../Type';
 import { Search, User } from '@element-plus/icons-vue';
 import  Input from '../Input.vue';
 
 const search = ref<string>('')
 const srch =ref<Validation|null>(null)
+
+const props = defineProps<{
+    user?: Users|null;
+}>()
 const find = ()=>{
     srch.value?.validate()
     if(srch.value?.error ==='')
@@ -53,6 +57,11 @@ const find = ()=>{
                             </el-dropdown-item>
                             <el-dropdown-item>
                                 Admin
+                            </el-dropdown-item>
+                            <el-dropdown-item v-if="props.user && props.user.set?.verify">
+                                <router-link :to="{name:'Validate'}">
+                                    validate
+                                </router-link>
                             </el-dropdown-item>
                             </el-dropdown-menu>
                         </template>

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import FormArticle from '../../Components/Creation/FormArticle.vue';
 import type { Article as TypeArticle, select, setPro } from '../../Type';
 import ListArticle from '../../Components/Creation/ListArticle.vue';
 
 const props = defineProps<{
   pro: setPro | null,
-  article: TypeArticle[],
+  article: TypeArticle[]|null,
   country:select[]
 }>();
 const articles = ref<TypeArticle[]|[]>();
@@ -16,9 +16,7 @@ const update = (value: TypeArticle[]) => {
 const updateArticle = (value: TypeArticle[]) => {
   articles.value = value
 }
-onMounted(()=>{
-  articles.value = props.article
-})
+
 </script>
 <template>
   <el-row>

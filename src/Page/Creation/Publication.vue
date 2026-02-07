@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 import FormPub from '../../Components/Creation/FormPub.vue';
 import type { publication, select } from '../../Type';
 import ListPub from '../../Components/Creation/ListPub.vue';
@@ -16,9 +16,7 @@ const publication = (pubs:publication[])=>{
 const update = (pubs:publication[])=>{
     pub.value = pubs
 }
-onMounted(()=>{
-    pub.value = props.pub
-})
+
 </script>
 <template>
     <el-row>

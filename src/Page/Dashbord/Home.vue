@@ -5,7 +5,8 @@ import type { setPro, User } from '../../Type';
 import { ref } from 'vue';
 import Actif from '../../Components/Dashbord/Actif.vue';
 import Achat from '../../Components/Dashbord/Achat.vue';
-import { Histogram, TrendCharts } from '@element-plus/icons-vue';
+import { Histogram, TrendCharts, UserFilled } from '@element-plus/icons-vue';
+import UserList from '../../Components/Dashbord/UserList.vue';
 
 const optionVente = ref<ApexOptions>({
     chart: {
@@ -58,6 +59,17 @@ const props = defineProps<{
                          </el-icon>
                     </template>
                     <Achat/>
+               </el-tab-pane>
+               <el-tab-pane v-if="user && user.set?.admin">
+                    <template #label>
+                         <span>
+                              User list
+                         </span>
+                         <el-icon class="mx-2">
+                              <UserFilled/>
+                         </el-icon>
+                    </template>
+                    <UserList/>
                </el-tab-pane>
           </el-tabs>
      </div>

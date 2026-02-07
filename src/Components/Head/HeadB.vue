@@ -23,16 +23,14 @@ const store = userStore();
 const profile = ref<setPro|null>(null)
 const loading =ref<boolean>(false)
 const props = defineProps<{
-  user: User;
-  profile: setPro|null;
+  user: User|null ;
+  pro: setPro|null;
 }>();
 const route = useRouter();
 
 const LoginOut = async () => {
   loading.value = true
-  localStorage.removeItem("token");
-  store.user = null;
-  store.auth = false;
+  await store.loginOut()
   route.push({ name: "Home" });
   loading.value = false
 };
@@ -94,7 +92,7 @@ const LoginOut = async () => {
     </el-col>
     <el-col :xs="24" :md="8" class="">
       <div class="flex justify-end space-x-5 mx-4 items-center">
-        <div v-if="props.profile!==null">
+        <div v-if="props.pro!==null">
           
         </div>
         <div class="space-x-4">
@@ -115,13 +113,13 @@ const LoginOut = async () => {
           </router-link>
         </div>
         <el-dropdown class="">
-          <span class="el-dropdown-link" v-if="props.profile===null">
+          <span class="el-dropdown-link" v-if="props.pro===null">
             <el-icon class="!text-white">
               <UserIcon />
             </el-icon>
           </span>
            <span class="el-dropdown-link" v-else>
-            <el-avatar :src="props.profile.set?.link" :size="20"></el-avatar>
+            <el-avatar  :src="props.pro?props.pro.set?.link:''" :size="20"></el-avatar>
           </span>
           <template #dropdown>
             <el-dropdown-item @click="LoginOut" v-loading.fullscreen.lock="loading">
@@ -130,7 +128,7 @@ const LoginOut = async () => {
                 <SwitchButton />
               </el-icon>
             </el-dropdown-item>
-            <el-dropdown-item v-if="props.user.set?.admin" @click="route.push({ name: 'DashAdmin' })">
+            <el-dropdown-item v-if="props.user && props.user.set?.admin" @click="route.push({ name: 'DashAdmin' })">
               <span class="pr-4">Admin</span>
               <el-icon class="mx-10">
                 <Users />

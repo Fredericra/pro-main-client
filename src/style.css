@@ -25,6 +25,10 @@
     .link{
         @apply text-[22px] text-center font-bold text-indigo-950 hover:text-indigo-800 hover:translate-y-1 transition-all duration-500;
     }
+    .item{
+        @apply px-4 cursor-pointer border-x-1 border-t-1  mt-4 h-full hover:text-blue-800 duration-1000;
+    }
+  
    
 }
 
@@ -42,5 +46,6 @@
         border-radius: 6px;
         cursor: pointer;
         content: "Uploader..."; 
+    
     }
 }

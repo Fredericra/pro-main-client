@@ -7,10 +7,13 @@ import Utility from '../../Utility';
 import Select from '../Select.vue';
 import { userStore } from '../../Auth/Store';
 import type { resData, select, Validation } from '../../Type';
+import { storeArticle } from '../../Auth/article';
+import { storeToRefs } from 'pinia';
 
 const store = userStore()
+const articleStore  =storeArticle()
+const { getCity } = storeToRefs(articleStore)
 const error = ref<string>('')
-const citySelect = ref<select[]>([])
 const loading = ref<boolean>(false)
 const title = ref<Validation>()
 const code = ref<Validation>()
@@ -33,12 +36,8 @@ const form = reactive<Record<string, any>>({
     file: null
 })
 const update = async (value: number | string | boolean) => {
-    citySelect.value = []
     const list = props.country.find(i => i.label === value)?.isoCode
-    const city = await store.getCity(list as string)
-    for (let key of city) {
-        citySelect.value.push({ value: key.name, label: key.name })
-    }
+    await articleStore.checkCitySelect(list as string);
 }
 
 const actionPost = async(data: object):Promise<resData> => {
@@ -86,8 +85,7 @@ const addPub = async () => {
             }
         }
         loading.value = true
-        const res = await actionPost(formdata)
-        console.log(res.data)
+        await actionPost(formdata)
         loading.value = false
     }
 loading.value = false
@@ -112,10 +110,10 @@ loading.value = false
         </div>
         <div class="flex space-x-2 mx-5">
             <div class="w-full">
-                <Select show-error ref="pays" v-model="form.pays" :value="props.country" @change="update" placeholder="entre votre pays" />
+                <Select show-error ref="pays" v-model="form.pays" :value="country" @change="update" placeholder="entre votre pays" />
             </div>
             <div class="w-full">
-                <Select show-error ref="ville" v-model='form.ville' :value="citySelect" placeholder="entre votre ville"></Select>
+                <Select show-error ref="ville" v-model='form.ville' :value="getCity" placeholder="entre votre ville"></Select>
             </div>
             <div class="w-full">
                 <Input type="text" ref="adress" placeholder="entre votre adreess" v-model="form.street"

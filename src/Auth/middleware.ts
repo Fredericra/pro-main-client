@@ -8,7 +8,7 @@ const store = userStore(pinia)
 
 const isAuthCheck = async():Promise<boolean>=>{
     await store.checkAuth();
-    const user = !!store.users
+    const user = !!store.getUser
     if(user){
         return true
     }
@@ -37,7 +37,13 @@ const isAuth = async(
 )=>{
     const auth = await isAuthCheck();
     if(auth){
-        next()
+        if(store.getUser?.set?.verify)
+        {
+            next()
+        }
+        else{
+            next({name:'Validate',query:{redirect:to.fullPath}})
+        }
     }
     else{
         next({name:'Login',query:{redirect:to.fullPath}});
@@ -52,10 +58,13 @@ const NeedVerify = async(
     const auth = await isAuthCheck();
     if(auth)
     {
-        if(store.users?.set?.verify===false) return next({name:'Validate',query:{redirect:to.fullPath}})
+        if(store.getUser?.set?.verify===false) 
+        {
+            next({name:'Validate',query:{redirect:to.fullPath}})
+        }
     }
     else{
-        return next({name:'Login',query:{redirect:to.fullPath}})
+        next();
     }
 }
 
@@ -67,7 +76,7 @@ const isAdmin = async(
     const auth = await isAuthCheck();
     if(auth)
     {
-        if(store.users?.set?.admin) 
+        if(store.getUser?.set?.admin) 
         {
             next();
         } 
