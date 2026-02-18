@@ -2,27 +2,24 @@
 import { UserFilled } from '@element-plus/icons-vue';
 import ActivatePro from '../../Components/Activate/ActivatePro.vue';
 import NextActivate from '../../Components/Activate/NextActivate.vue';
-import { computed, ref, } from 'vue';
+import {onMounted, ref, watch, type Component, } from 'vue';
 import ShowProfile from '../../Components/Activate/ShowProfile.vue';
 import Step from '../../Components/Step.vue';
-import type { setPro } from '../../Type';
+import { userStore } from '../../Auth/Store';
 
-const checkPro = ref<boolean>()
 const actives = ref<number>(0)
+const Layouts = ref<Component>(ActivatePro)
+const store = userStore()
 
-const props = defineProps<{
-    pro:setPro|null
-}>()
-
-
-
-const Layout = computed(()=>{
-    checkPro.value = !!props.pro
-   if(checkPro.value){
-    actives.value = 1;
-    return NextActivate;
-   }
-   return ActivatePro;
+onMounted(async()=>{
+    await store.checkPro();
+})
+watch(()=>store.pro,async()=>{
+    await store.checkPro()
+    const pro = !!store.pro;
+    if(pro){
+        Layouts.value = NextActivate;
+    }
 })
 </script>
 <template>
@@ -30,14 +27,14 @@ const Layout = computed(()=>{
         <el-tab-pane label="Cree compte pro">
             <el-row>
                 <el-col :xs="24" :md="8">
-                    <component :is='Layout'></component>
+                    <component :is='Layouts'></component>
                     <div>
                         <Step :step="actives"/>
                     </div>
                 </el-col>
                 <el-col :xs="24" :md="8"></el-col>
                 <el-col :xs="24" :md="8">
-                    <div v-if="!checkPro">
+                    <div v-if="!store.getPro">
                         <div class="flex justify-center items-center w-full">
                             <div>
                                 <el-alert title="votre compte pro est verouille" type="warning" show-icon class="w-full"

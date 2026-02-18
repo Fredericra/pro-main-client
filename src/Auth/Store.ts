@@ -13,13 +13,13 @@ import Utility from "../Utility";
 import { defineStore } from "pinia";
 import currency from "currency-codes-ts";
 
-
 export const userStore = defineStore("auths", {
   state: (): state => ({
     user: null,
     pro: null,
     auth: false,
-    verify:false,
+    verify: false,
+    allUser: null,
   }),
   getters: {
     isAuth: (state) => {
@@ -34,24 +34,27 @@ export const userStore = defineStore("auths", {
     getPro: (state): setPro | null => {
       return state.pro;
     },
+    getAllUser: (state): User[] | null => {
+      return state.allUser;
+    },
     current: () => {
       return currency.data;
     },
     option: () => {
       return {
-        theme:'snow',
+        theme: "snow",
         modules: {
           toolbar: [
-            [{ font: [] }, { size: ['smal','large','meduim','huge'] }],
+            [{ font: [] }, { size: ["smal", "large", "meduim", "huge"] }],
             ["bold", "italic", "underline", "strike"],
             [{ color: [] }, { background: [] }],
             [{ script: "sub" }, { script: "super" }],
-            [{ header: [1,2,3,4,5,false] }, "blockquote", "code-block"],
+            [{ header: [1, 2, 3, 4, 5, false] }, "blockquote", "code-block"],
             [{ list: "ordered" }, { list: "bullet" }],
             [{ indent: "-1" }, { indent: "+1" }],
             [{ direction: "rtl" }],
             [{ align: [] }],
-            ['note'],
+            ["note"],
             ["link", "image", "video"],
             ["clean"],
           ],
@@ -81,12 +84,18 @@ export const userStore = defineStore("auths", {
     },
   },
   actions: {
+    async checkUserList(): Promise<void> {
+      const res = await this.Geting("getalluser");
+      const alluser = res.data as User[] | null;
+      this.allUser = alluser;
+    },
     async checkAuth(): Promise<User | null> {
       try {
         const res = await this.getUserCheck();
+        this.auth = !!res;
         if (res?.set?.verify) {
           this.user = res;
-          this.verify = true
+          this.verify = true;
           return this.user;
         } else {
           this.user = res;
@@ -94,6 +103,7 @@ export const userStore = defineStore("auths", {
         }
       } catch {
         this.user = null;
+        this.auth = false
         return this.user;
       }
     },
@@ -115,8 +125,7 @@ export const userStore = defineStore("auths", {
         data: Utility.encryptData(data),
       });
       const response = Utility.decryptData(res.data) as resData;
-      if(response.status){
-
+      if (response.status) {
       }
       return response;
     },
@@ -136,8 +145,8 @@ export const userStore = defineStore("auths", {
       this.user = data.data as User | null;
       return data.data as User | null;
     },
-    async loginOut():Promise<void>{
-      localStorage.removeItem('token');
+    async loginOut(): Promise<void> {
+      localStorage.removeItem("token");
       this.user = null;
       this.auth = false;
       this.pro = null;
@@ -146,16 +155,16 @@ export const userStore = defineStore("auths", {
     async checkPro(): Promise<setPro | null> {
       try {
         const res = (await this.Geting("/professionel")).data as setPro | null;
-        this.pro = res
-        return this.pro
+        this.pro = res;
+        return this.pro;
       } catch (error) {
-        return null;
+        this.pro = null;
+        return this.pro;
       }
     },
     async getUserActif(): Promise<resData> {
       const res = await api.get("/getUser");
       return Utility.decryptData(res.data) as resData;
-    }
-    
+    },
   },
 });

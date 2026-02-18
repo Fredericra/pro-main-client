@@ -3,16 +3,14 @@ import { Handbag, Money, Plus, ShoppingCart, ShoppingCartFull, Ticket } from '@e
 import Input from '../Input.vue';
 import { onMounted, reactive, ref } from 'vue';
 import Select from '../Select.vue';
-import type { Article, select, setPro, Validation } from '../../Type';
+import type {  select, setPro, Validation } from '../../Type';
 import File from '../file.vue';
 import Utility from '../../Utility';
 import { storeArticle } from '../../Auth/article';
 import { storeToRefs } from 'pinia';
 import { userStore } from '../../Auth/Store';
 
-const emit = defineEmits<{
-    (e:'updateArticle',value:any[]):void
-}>()
+
 const props = defineProps<{
     pro: setPro | null,
     country:select[],
@@ -22,11 +20,12 @@ const articleSto = storeArticle()
 const { getCurrent } = storeToRefs(articleSto)
 const suffix = ref<string>('')
 const error = ref<string>('');
+const description = ref<string>('')
 const form = reactive<Record<string, string | any>>({
     title: '',
     code: '',
-    description: '',
     price: 0,
+    priceInitial:0,
     device: '',
     quantity: 0,
     category: '',
@@ -40,7 +39,6 @@ const form = reactive<Record<string, string | any>>({
 });
 const title = ref<Validation>()
 const code = ref<Validation>()
-const description = ref<Validation>()
 const prix = ref<Validation>()
 const device = ref<Validation>()
 const quantite = ref<Validation>()
@@ -51,16 +49,17 @@ const marque = ref<Validation>()
 const heigth = ref<Validation>()
 const width = ref<Validation>()
 const length = ref<Validation>()
+const initial = ref<Validation>()
 const loading = ref<boolean>(false)
 
 const addArticle = async () => {
     error.value = ''
     title.value?.validate()
     code.value?.validate()
-    description.value?.validate()
     prix.value?.validate()
     device.value?.validate()
     quantite.value?.validate()
+    initial.value?.validate()
     category.value?.validate()
     model.value?.validate()
     size.value?.validate()
@@ -70,11 +69,13 @@ const addArticle = async () => {
     length.value?.validate()
     const sizes = Utility.file(form.file, 2,4);
     const formUpdate = new FormData();
-
+    if(description.value === "" || description.value === undefined){
+        error.value = 'veuillez rempliz le descripton';
+        return
+    }
     if (
         title.value?.error === '' &&
         code.value?.error === '' &&
-        description.value?.error === '' &&
         prix.value?.error === '' &&
         device.value?.error === '' &&
         quantite.value?.error === '' &&
@@ -84,7 +85,9 @@ const addArticle = async () => {
         marque.value?.error === '' &&
         heigth.value?.error === '' &&
         width.value?.error === '' &&
-        length.value?.error === ''
+        length.value?.error === '' &&
+        initial.value?.error === '' &&
+        error.value === ''
     ) {
         if (sizes === false) {
             error.value = "Aucun file selectionner ou File depasse 2M ou 4 photo maximuim"
@@ -92,6 +95,7 @@ const addArticle = async () => {
         }
         else {
             loading.value = true
+            formUpdate.append('description',description.value)
             for (let x of form.file) {
                 formUpdate.append('files', x)
             }
@@ -102,8 +106,8 @@ const addArticle = async () => {
             }
             
             const res = await store.Posting(formUpdate, '/article')
-            const resArticle = await store.Geting('getarticle')
-            emit('updateArticle',resArticle.data as Article[] | [])
+            console.log(res)
+            await articleSto.checkArticle();
             loading.value = false
             if(res.status)
             {
@@ -125,6 +129,9 @@ const changeCurrent = (value: string | number) => {
     suffix.value = value as string;
 }
 
+const update = (val:string)=>{
+    description.value = val
+}
 onMounted(async () => {
     await articleSto.checkCurrent();
 })
@@ -165,7 +172,11 @@ onMounted(async () => {
             </div>
             <div class="flex space-x-2 mx-5">
                 <div class="w-4/12">
-                    <Select ref="device" show-error @change="changeCurrent" v-model="form.device":value="getCurrent" placeholder="Votre devise" />
+                    <Select ref="device" show-error @change="changeCurrent" v-model="form.device":value="getCurrent as select[]" placeholder="Votre devise" />
+                </div>
+                <div class="w-full">
+                    <Input ref="initial" type="number" show-error v-model="form.priceInitial" placeholder="Prix initial"
+                        :prefixe="Money" :suffix="suffix" />
                 </div>
                 <div class="w-full">
                     <Input ref="prix" type="number" show-error v-model="form.price" placeholder="Prix article"
@@ -191,12 +202,17 @@ onMounted(async () => {
                 </div>
             </div>
             <div class="flex space-x-2 mx-5">
-                <div class="w-full">
-                    <Input ref="description" type="textarea" show-error :rows="3" v-model="form.description"
-                        placeholder="description de votre article" :prefixe="Ticket" />
+                <div class="w-full h-auto">
+                    <QuillEditor 
+                    v-model:content="description" 
+                    content-type="html" 
+                    :options="store.option"
+                    @update:content="update"
+                    class="max-h-40 overflow-hidden overflow-y-scroll"
+                    />
                 </div>
             </div>
-            <div class="space-x-2 mx-5">
+            <div class="space-x-2 mx-5 pt-15">
                 <File multiple v-model="form.file" accept=".jpg,.png,.jpeg" />
                 <el-alert type="warning" show-icon :title="error" v-if="error !== ''"></el-alert>
             </div>

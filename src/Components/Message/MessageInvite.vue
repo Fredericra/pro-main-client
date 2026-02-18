@@ -1,71 +1,52 @@
 <script lang="ts" setup>
-import { BellFilled, CircleCheckFilled, Delete, MuteNotification, Promotion, UserFilled } from '@element-plus/icons-vue';
-import type { Abonne } from '../../../Type';
 import { onMounted, ref } from 'vue';
-import { userStore } from '../../../Auth/Store';
-import { storeArticle } from '../../../Auth/article';
+import { storeArticle } from '../../Auth/article';
+import type { letter } from '../../Type';
+import { BellFilled, Delete, MuteNotification, Promotion } from '@element-plus/icons-vue';
 import { storeToRefs } from 'pinia';
 
-const store2 = storeArticle()
-const store = userStore()
-const { newletter,getLetter }  = storeToRefs(store2)
-const id = ref<{id:string,email:string,pseudo:string}[]>([])
-const combine = ref<Abonne[]>()
 const loading = ref<boolean>(false)
-
-const handleselect = (val: Abonne[]) => {
-    id.value = [
-        ...val.map(item=>({id:item.id,email:item.email as string,pseudo:item.pseudo}))
-    ]
-}
-
-const envoyer = async()=>{
-    loading.value = true
-    await store.Posting({data:id.value},'sendMessage');
-    loading.value = false
+const id = ref<{id:string,email:string}[]>()
+const store2 = storeArticle()
+const { getNewLetter } = storeToRefs(store2)
+const envoyer = ()=>{
 
 }
-onMounted(async () => {
-    await store2.checkLetter('messageletter')
+const handleselect = (val:letter[])=>{
+   id.value = [...val.map((item:letter)=>({id:item._id,email:item.email}))];
+}
+onMounted(async()=>{
+    await store2.checkLetter('messageletter');
     await store2.checkNewLetter()
-    await store.checkUserList();
-    combine.value = [
-        ...newletter.value?newletter.value.map(item => ({ id:item._id,email: item.email===''?'test@gmail.com':item.email, _createdAt: item._createdAt,user:false,pseudo:'',message:item.set })):[],
-        ...store.allUser?.map(user => ({id:user._id, email: user.email, _createdAt: user._createdAt,user:true,pseudo:user.username as string,message:'' })) || []
-    ]
-    
 })
+const trashMessage = async()=>{
+
+}
 </script>
 <template>
-    <el-row gutter="24">
+    <el-row gutter="100">
         <el-col :xs="24" :md="14">
             <el-table 
-            :data="combine" 
+            :data="getNewLetter" 
             :border="true" 
-            style="width: 100%;" 
             :preserve-expanded-content="false"
-            @selection-change="handleselect">
-                <el-table-column type="expand">
-                    <template #default="scope">
-                        <div class="px-4 py-2">
-                            <p><strong>Email:</strong> {{ scope.row.email }}</p>
-                        </div>
-                         <el-table :data="scope.row.message" :border="false" v-if="scope.row.user===false">
-                            <el-table-column>
-                                <template #default="scopeur">
-                                    <div>
-                                        Message
-                                    </div>
-                                    <div class="ql-editor">
-                                        <blockquote>{{scopeur.row.message }}</blockquote>
-                                    </div>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </template>
-                </el-table-column>
+            style="width: 100%;" row-key="id" @selection-change="handleselect">
+            <el-table-column type="expand">
+                <template #default="scope">
+                    <el-table :data="scope.row.set" :border="false">
+                        <el-table-column >
+                            <template #default="scopechild">
+                                <div>Message</div>
+                                <div>
+                                    {{ scopechild.row.message }}
+                                </div>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </template>
+            </el-table-column>
                 <el-table-column type="selection"></el-table-column>
-                <el-table-column label="Email" prop="email"></el-table-column>
+                <el-table-column label="Email" property="email"></el-table-column>
                 <el-table-column label="Date">
                     <template #default="scope">
                         {{ new Date(scope.row._createdAt).toLocaleDateString('fr-FR') }}
@@ -111,7 +92,7 @@ onMounted(async () => {
                             <MuteNotification/>
                         </el-icon>
                     </el-button>
-                      <el-button type="danger">
+                      <el-button type="danger" @click="trashMessage">
                         <span>Supperimer</span>
                         <el-icon class="mx-2">
                             <Delete/>
@@ -120,8 +101,7 @@ onMounted(async () => {
                </div>
             </div>
             <div class="flex justify-center items-center py-4">
-                <div v-if="getLetter" v-html="getLetter" class="m-5"></div>
-                <el-empty v-else></el-empty>
+                <div v-html="store2.getLetter" class="m-5"></div>
             </div>
         </el-col>
     </el-row>

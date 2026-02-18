@@ -1,9 +1,14 @@
 <script lang="ts" setup>
-import { ref, watch, type Component } from "vue";
-
+import type { Component } from "vue";
+import { ref, watch, } from "vue";
+interface option {
+  label:string|number,
+  value:string|number
+}
 const model = defineModel<string | number | boolean>();
 const error = ref<string>("");
 const props = defineProps<{
+  option?:option[]|[],
   style?:string;
   errortype?:string | 'warning';
   rows?:number;
@@ -98,6 +103,7 @@ watch(model, () => {
     :placeholder="props.placeholder"
     @input="validate"
     class=""
+    :options="option"
     :type="props.type==='textarea'?'textarea':props.type||'text'"
     :rows="props.type==='textarea'?props.rows:''"
     :style="props.style"

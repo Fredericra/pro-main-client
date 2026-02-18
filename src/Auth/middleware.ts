@@ -1,21 +1,23 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from "vue-router";
 import { userStore } from "./Store";
-import { createPinia } from "pinia";
+import { createPinia, storeToRefs } from "pinia";
 
 
 const pinia = createPinia();
 const store = userStore(pinia)
+const { auth } = storeToRefs(store)
 
 const isAuthCheck = async():Promise<boolean>=>{
     await store.checkAuth();
     const user = !!store.getUser
     if(user){
+        auth.value = true;
         return true
-    }
+    }else
     localStorage.removeItem('token')
     return false
 ;}
-
+await isAuthCheck();
 const Auth = async(
     to: RouteLocationNormalized,
     _: RouteLocationNormalized,

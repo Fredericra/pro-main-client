@@ -1,5 +1,6 @@
 import { createRouter,createMemoryHistory } from "vue-router";
 import middleware from "../Auth/middleware"
+import loading from "../Auth/loading";
 
 const routes = [
     {name:"Home",path:"/",component:()=>import("../Page/Home.vue")},
@@ -27,11 +28,18 @@ const router = createRouter({
 })
 
 router.beforeEach(async(to,from,next)=>{
+    loading.startLoading()
     if(to.meta.requireAuth) await middleware.Auth(to,from,next);
     if(to.meta.verify) await middleware.NeedVerify(to,from,next);
     if(to.meta.isAdmin) await middleware.isAdmin(to,from,next);
     if(to.meta.auth) await middleware.isAuth(to,from,next);
     next()
+})
+router.afterEach(()=>{
+    loading.closeLoading()
+})
+router.onError(()=>{
+    loading.closeLoading()
 })
 
 

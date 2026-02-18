@@ -2,27 +2,19 @@
 import Publication from '../../Creation/Publication.vue';
 import Article from '../../Creation/Article.vue';
 import Folio from '../../Creation/Folio.vue';
-import type {  Article as TypeArticle, User, publication, select, setPro } from '../../../Type';
-import { useRoute } from 'vue-router';
 import { CirclePlusFilled, ShoppingTrolley } from '@element-plus/icons-vue';
-import { storeArticle } from '../../../Auth/article';
+import { userStore } from '../../../Auth/Store';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 
-
-const articleStore = storeArticle()
-const {getArticle,getPub,getCountry} = storeToRefs(articleStore)
-const route = useRoute()
-const props = defineProps<{
-    pro:setPro|null,
-    user:User,
-}>()
+const store = userStore()
+const { getUser } = storeToRefs(store)
 
 onMounted(async()=>{
-    await articleStore.checkArtcile()
-    await articleStore.checkPub()
-    await articleStore.checkCountrySelect()
+    await store.checkAuth()
 })
+
+
 
 </script>
 <template>
@@ -34,10 +26,7 @@ onMounted(async()=>{
                     <CirclePlusFilled/>
                 </el-icon>
             </template>
-            <Publication 
-            :pro="props.pro" 
-            :country="getCountry"
-            :pub="getPub ?? []"/>
+            <Publication />
         </el-tab-pane>
         <el-tab-pane>
             <template #label>
@@ -46,14 +35,11 @@ onMounted(async()=>{
                     <ShoppingTrolley/>
                 </el-icon>
             </template>
-            <Article 
-            :pro="pro" 
-            :article="getArticle" 
-            :country="getCountry"/>
+            <Article />
         </el-tab-pane>
-        <el-tab-pane label="Porfolio" v-if="props.user?.set?.admin">
+        <el-tab-pane label="Porfolio" v-if="getUser?.set?.admin">
             <Folio/>
         </el-tab-pane>
-        <el-tab-pane label="Modifier Mon Porfolio" v-if="route.meta.admin"></el-tab-pane>
+        <el-tab-pane label="Modifier Mon Porfolio" v-if="getUser?.set?.admin"></el-tab-pane>
     </el-tabs>
 </template>

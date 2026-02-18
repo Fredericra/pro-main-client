@@ -7,6 +7,7 @@ import router from './route'
 import VueApexCharts from 'vue3-apexcharts'
 import { QuillEditor } from '@vueup/vue-quill'
 import ElementPlus from 'element-plus'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import 'element-plus/dist/index.css'
 
 

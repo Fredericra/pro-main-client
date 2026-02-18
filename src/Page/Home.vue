@@ -1,10 +1,20 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
+import { storeArticle } from '../Auth/article';
+import { storeToRefs } from 'pinia';
 
+const store2 = storeArticle()
+const { getCarouselle } = storeToRefs(store2)
+
+onMounted(async()=>{
+  await store2.checkCarousselle()
+})
 </script>
 <template>
   <el-carousel :interval="4000" arrow="always">
-    <el-carousel-item v-for="n in 3" :key="n">
-      <h3>Slide {{ n }}</h3>
+    <el-carousel-item v-for="(value,index) in getCarouselle" :key="index">
+      <el-image :src="value.image" fit="fill" class="h-100 w-full"  show-progress>
+      </el-image>
     </el-carousel-item>
   </el-carousel>
   <el-row :gutter="18">

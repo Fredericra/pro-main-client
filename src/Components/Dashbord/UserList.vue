@@ -2,39 +2,53 @@
 import { onMounted, ref } from 'vue';
 import type { User } from '../../Type';
 import { userStore } from '../../Auth/Store';
+import { storeToRefs } from 'pinia';
+import { CircleCheckFilled, CircleCloseFilled } from '@element-plus/icons-vue';
 
 const store = userStore()
-const listSelect = ref<User[]>([])
-const userList = ref<User[]>([])
-onMounted(async () => {
-    const res = await store.Geting('getalluser')
-    userList.value = res.data as User[]
-})
+const id = ref<{id:string}[]|[]>([])
+const { getAllUser } = storeToRefs(store)
 
 const selection = (val: User[]) => {
-    listSelect.value = val
+    id.value = [...val.map((item:User)=>({id:item._id}))];
     
 }
 
 const trash = async()=>{
-    const data = []
-    if(listSelect.value.length === 0) return;
-    for(let x of listSelect.value){
-        data.push(x._id)
-    }
-    const res = await store.Posting({data:data},'deleteuser')
-    userList.value = res.data as User[]
+    if(id.value.length===0) return;
+    await store.Posting({data:id.value},'deleteuser')
+    await store.checkUserList()
 }
 const selectable = (row:User)=>!['bokyshoping@gmail.com'].includes(row.email)
 const active = async()=>{
 }
+onMounted(async () => {
+    await store.checkUserList()
+})
 </script>
 <template>
     <el-row>
         <el-col :xs="24" :md="14">
             <div>
-                <el-table :border="true" :data="userList" row-key="_id" @selection-change="selection">
+                <el-table :border="true" :preserve-expanded-content="false" :data="getAllUser" row-key="_id" @selection-change="selection">
                     <el-table-column type="selection" :selectable="selectable"></el-table-column>
+                    <el-table-column type="expand">
+                        <template #default="scope">
+                            <el-table :data="scope.row.set" :border="true">
+                                <el-table-column label="Nom" property="lastname"></el-table-column>
+                                <el-table-column label="Prenom" property="firstname"></el-table-column>
+                                <el-table-column label="Pseudo" property="username"></el-table-column>
+                                <el-table-column label="Type">
+                                    <template #default="child">
+                                        <el-icon>
+                                            <circle-check-filled v-if="child.row.verify"/>
+                                            <circle-close-filled v-else/>
+                                        </el-icon>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="Email" property="email"></el-table-column>
                     <el-table-column label="Date">
                         <template #default="scope">

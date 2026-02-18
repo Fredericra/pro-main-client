@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { Bell, CircleCheckFilled, Message, Service, UserFilled } from '@element-plus/icons-vue';
+import { Bell, CircleCheckFilled, Message, PictureRounded, Service, UserFilled } from '@element-plus/icons-vue';
 import ConfirmMessage from '../../../Components/Message/ConfirmMessage.vue';
 import { ref } from 'vue';
+import Caroussel from '../../../Components/Dashbord/Caroussel.vue';
 
 const confirm = ref<string>('')
 
@@ -71,6 +72,17 @@ const confirm = ref<string>('')
                     </el-icon>
                 </el-icon>
             </template>
+        </el-tab-pane>
+         <el-tab-pane>
+            <template #label>
+                <span>Carouselle</span>
+                <el-icon class="mx-2">
+                    <el-icon>
+                        <PictureRounded/>
+                    </el-icon>
+                </el-icon>
+            </template>
+            <Caroussel/>
         </el-tab-pane>
          
     </el-tabs>

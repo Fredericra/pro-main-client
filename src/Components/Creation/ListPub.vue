@@ -3,32 +3,40 @@ import type { publication } from '../../Type';
 import { ref } from 'vue';
 import { Delete } from '@element-plus/icons-vue';
 import { userStore } from '../../Auth/Store';
+import { storeArticle } from '../../Auth/article';
+
 
 const loading = ref<boolean>(false)
 const store = userStore()
-const listDelete = ref<publication[]>([])
+const store2 = storeArticle()
+const listDelete = ref<publication[]>()
 const selection = (pub:publication[])=>{
-    listDelete.value = pub;
+    listDelete.value = pub
 }
 
-const emit = defineEmits<{
-    (e:'update',value:publication[]):void
-}>()
 
 const deletePub = async()=>{
-    const ids = listDelete.value.map((item) => item._id);
-    if(ids.length === 0) return;
-    loading.value = true
-    const res = await store.Posting({data:ids},'/deletepub')
-    emit('update',res.data as publication[])
+     const id = []
+     loading.value = true
+    if(!listDelete.value) {
+        loading.value = false
+        return 
+    };
+    for(let x of listDelete.value as publication[]){
+        id.push(x._id)
+    }
+    await store.Posting({data:id},'/deletepub')
+    await store2.checkPub()
     loading.value = false
 }
 const props = defineProps<{
-    pub:publication[]|[]
+    pub:publication[]
 }>()
+
 </script>
+
 <template>
-    <div>
+    <div v-if="props.pub.length>0">
         <el-table
         ref="multiple"
         :data="props.pub"
@@ -51,12 +59,15 @@ const props = defineProps<{
             <el-table-column label="code" property="code"></el-table-column>
         </el-table>
         <div class="mx-5  py-4">
-            <el-button type="danger" class="w-full" @click="deletePub" v-loading.fullscreen.lock="false">
+            <el-button type="danger" class="w-full" @click="deletePub" v-loading.fullscreen.lock="loading">
                 <span>Supprimer</span>
                 <el-icon class="mx-4">
                     <Delete/>
                 </el-icon>
             </el-button>
         </div>
+    </div>
+    <div v-else>
+        <el-empty></el-empty>
     </div>
 </template>

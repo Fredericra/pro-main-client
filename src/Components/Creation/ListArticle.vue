@@ -3,17 +3,17 @@ import { Delete } from '@element-plus/icons-vue';
 import type { Article } from '../../Type';
 import { ref } from 'vue';
 import { userStore } from '../../Auth/Store';
+import { storeArticle } from '../../Auth/article';
 
 
 const store = userStore()
+const store2 = storeArticle()
 const deleteArtile = ref<Article[]>()
 const loading = ref<boolean>(false)
 const props = defineProps<{
-  article: Article[] | null
+  article: Article[] 
 }>();
-const emit = defineEmits<{
-    (e:'update',value:Article[]):void
-}>()
+
 const hanleSelection = (val: Article[]) => {
     deleteArtile.value = val;
 };
@@ -27,14 +27,13 @@ const deleteSelection = async()=>{
     for(let x of deleteArtile.value as Article[]){
         id.push(x._id)
     }
-    const res = await store.Posting({data:id},'/deletearticle')
-    console.log(res)
-    emit('update',res.data as Article[])
+    await store.Posting({data:id},'/deletearticle')
+    await store2.checkArticle()
     loading.value = false
 }
 </script>
 <template>
-    <div class="px-4 mx-4">
+    <div class="px-4 mx-4" v-if="props.article?.length>0">
         <div>
             <el-table
                 ref="multiple"
@@ -45,6 +44,11 @@ const deleteSelection = async()=>{
                 @selection-change="hanleSelection"
             >
         <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="expand">
+            <template #default="scope">
+                    
+            </template>
+        </el-table-column>
         <el-table-column label="titre">
             <template #default="scope">
                 {{ scope.row.title}}
@@ -63,5 +67,8 @@ const deleteSelection = async()=>{
                 </el-icon>
             </el-button>
         </div>
+    </div>
+    <div v-else>
+        <el-empty></el-empty>
     </div>
 </template>

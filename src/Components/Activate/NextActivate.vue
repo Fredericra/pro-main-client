@@ -5,7 +5,9 @@ import { onMounted, reactive, ref, watch } from 'vue';
 import type { select, Validation } from '../../Type';
 import { userStore } from '../../Auth/Store';
 import Select from '../Select.vue';
+import { storeArticle } from '../../Auth/article';
 
+const store2 = storeArticle()
 const country = ref<select[]>([]);
 const ville = ref<select[]>([]);
 const name = ref<Validation>();
@@ -16,47 +18,39 @@ const lieu = ref<Validation>();
 const pays = ref<Validation>();
 const city = ref<Validation>();
 const store = userStore()
-const form = reactive<Record<string, string|number>>({
-    name:"",
-    number:"",
-    date:"",
-    cvv:"",
-    lieu:"",
-    pays:"",
-    city:""
+const form = reactive<Record<string, string | number>>({
+    name: "",
+    number: "",
+    date: "",
+    cvv: "",
+    lieu: "",
+    pays: "",
+    city: ""
 })
 
 
 
-const search = async(value:string|number)=>{
-    ville.value = []
-    const findCity = country.value?.find(i=>i.value === value)
-    const cities =await store.getCity(findCity?.isoCode as string)
-    for(let i of cities){
-        ville.value.push({label:i.name,value:i.name})
-    }
-  
+const search = async (value: string | number) => {
+    const IsoCode = country.value?.find(i => i.value === value)
+    await store2.checkCitySelect(IsoCode?.isoCode as string)
+
 }
 
-onMounted(async()=>{
-    const countrys = await store.getCountry()
-    for(let i of countrys){
-        country.value.push({label:i.name,value:i.name,isoCode:i.isoCode})
-    }
-    console.log(country.value);
+onMounted(async () => {
+    await store2.checkCountrySelect()
+
 })
 
-const nextactivate = ()=>{
+const nextactivate = () => {
     name.value?.validate();
     number.value?.validate();
     date.value?.validate();
-    cvv.value?.validate();  
+    cvv.value?.validate();
     lieu.value?.validate();
     pays.value?.validate();
     city.value?.validate();
 
-    console.log("next activate");
-}   
+}
 
 </script>
 <template>
@@ -66,39 +60,41 @@ const nextactivate = ()=>{
     <el-form @submit.prevent class="space-y-6">
         <div class="flex space-x-2 mx-5">
             <div class="w-full">
-                <Input show-error ref="name" v-model="form.name" placeholder="nom banque" :prefixe="Ticket"/>
+                <Input show-error ref="name" v-model="form.name" placeholder="nom banque" :prefixe="Ticket" />
             </div>
-              <div class="w-full">
-                <Input show-error v-model="form.number" ref="number" placeholder="nom article" :prefixe="Ticket"/>
+            <div class="w-full">
+                <Input show-error v-model="form.number" ref="number" placeholder="nom article" :prefixe="Ticket" />
             </div>
         </div>
         <div class="flex space-x-2 mx-5">
             <div class="w-full">
-                <Input v-model="form.date" ref="date" show-error placeholder="date publication" :prefixe="Ticket"/>
+                <Input v-model="form.date" ref="date" show-error placeholder="date publication" :prefixe="Ticket" />
             </div>
-              <div class="w-16/12">
-                <Input v-model="form.cvv" ref="cvv" show-error placeholder="cvv" :prefixe="Ticket"/>
+            <div class="w-16/12">
+                <Input v-model="form.cvv" ref="cvv" show-error placeholder="cvv" :prefixe="Ticket" />
             </div>
         </div>
         <div class="flex space-x-2 mx-5">
             <div class="w-8/12">
-                <Input show-error ref="lieu" v-model="form.lieu" placeholder="lieu publication" :prefixe="Ticket"/>
+                <Input show-error ref="lieu" v-model="form.lieu" placeholder="lieu publication" :prefixe="Ticket" />
             </div>
             <div class="w-full">
-                <Select show-error message="veuillez selection votre pays" ref="pays" @change="search" v-model="form.pays" :value="country" placeholder="pays publication" />
+                <Select show-error message="veuillez selection votre pays" ref="pays" @change="search"
+                    v-model="form.pays" :value="store2.getCountry" placeholder="pays publication" />
             </div>
         </div>
-         <div class="flex space-x-2 mx-5">
+        <div class="flex space-x-2 mx-5">
             <div class="w-8/12">
             </div>
             <div class="w-full">
-                <Select show-error ref="city" message="veuillez selectionne le ville" v-model="form.city" :value="ville" placeholder="ville"/>
+                <Select show-error ref="city" message="veuillez selectionne le ville" v-model="form.city" :value="ville"
+                    placeholder="ville" />
             </div>
         </div>
         <el-button type="info" @click="nextactivate" class="btn">
             <span>Ajouter</span>
             <el-icon class="mx-4">
-                <Plus/>
+                <Plus />
             </el-icon>
         </el-button>
     </el-form>

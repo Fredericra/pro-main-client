@@ -1,9 +1,10 @@
 
 export interface User {
-  _id?: string;
+  _id: string;
   username?: string;
   lastname?: string;
   firstname?: string;
+  _createdAt?:Date;
   email: string;
   password: string;
   set?: {
@@ -71,6 +72,7 @@ export interface pro {
   place?: string;
   country: string;
   city: string;
+  currency:string;
   file?: File | File[] | null;
 }
 
@@ -109,6 +111,8 @@ export interface select {
   phoneCode?:string;
   name?:string;
   flag?:string;
+  device?:string;
+  code?:string;
 }
 
 export interface city {
@@ -142,6 +146,7 @@ export interface Article {
     _type: "reference";
   };
   price: number;
+  priceI:number;
   quantity: number;
   set: imgArticle[];
 }
@@ -195,9 +200,22 @@ export interface letter {
   _updatedAt: Date;
   subject: string;
   type:string;
-  email?: string;
+  email: string;
   message?:string;
-  set?:message[]
+  set:message[]
+}
+export interface Actif {
+  device:string;
+  nom:string;
+  chiffre:number;
+  class:string;
+}
+export interface Abonne {
+  email?:string;
+  _createdAt?:Date;
+  id:string;
+  user:boolean;
+  pseudo:string;
 }
 
 export interface message {
@@ -220,15 +238,28 @@ export interface state {
   pro:setPro|null;
   auth:boolean;
   verify:boolean;
+  allUser:User[]|null
 }
 
 export interface store {
-  article:Article[]|null;
-  pub:publication[]|null;
+  article:Article[];
+  pub:publication[];
   country:select[];
   city:select[];
-  device:select[];
-  letter:any
+  device:select[]|select;
+  letter:any;
+  currentCountry:select|select[]|null;
+  Carouselle:carouselle[]|null;
+  newletter:letter[]|null,
+  vente:number
+}
+
+export interface carouselle {
+  _id:string;
+  titre:string;
+  sous:string;
+  description:string;
+  image:string;
 }
 
 

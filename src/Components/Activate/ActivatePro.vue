@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { pro, select, Validation } from "../../Type";
-import { reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { userStore } from "../../Auth/Store";
 import Utility from "../../Utility";
 import { Place, User } from "@element-plus/icons-vue";
@@ -12,10 +12,8 @@ import { storeToRefs } from "pinia";
 
 
 const ArticleStore = storeArticle()
+const store = userStore();
 const { country,getCountry,getCity } = storeToRefs(ArticleStore)
-const props = defineProps<{
-  country:select[]
-}>()
 
 const form = reactive<pro>({
   nom: "",
@@ -23,6 +21,7 @@ const form = reactive<pro>({
   place: "",
   country: "",
   city: "",
+  currency:'',
   file: null,
 });
 
@@ -30,13 +29,13 @@ const form = reactive<pro>({
 const FileMessage = ref<string|null>(null)
 const suffixCity = ref<string>('')
 const phoneCode = ref<string>('261')
+const device = ref<string>('')
 const city = ref<Validation>();
 const nom = ref<Validation>();
 const phone = ref<Validation>();
 const mycountry = ref<Validation>()
 const place = ref<Validation>();
 const loading = ref<boolean>(false)
-const store = userStore();
 const active = async () => {
   const formUpload = new FormData();
   const size = Utility.file(form.file, 3);
@@ -46,9 +45,11 @@ const active = async () => {
   mycountry.value?.validate()
   city.value?.validate()
   formUpload.append("nom", form.nom);
-  formUpload.append("phone", phoneCode.value + form.phone);
+  formUpload.append("phone",form.phone);
+  formUpload.append("phonecode",phoneCode.value);
   formUpload.append("country", form.country)
   formUpload.append('city', form.city)
+  formUpload.append('currency',device.value);
   formUpload.append("place", form.place as string);
   formUpload.append("file", form.file as any);
   if (nom.value?.error === "" || phone.value?.error === "") {
@@ -56,7 +57,6 @@ const active = async () => {
       loading.value = true
       FileMessage.value = null
       await store.Posting(formUpload, "/Pro");
-      await store.checkPro();
       loading.value = false
     }
     else {
@@ -66,11 +66,17 @@ const active = async () => {
 };
 
 const search = async(value:string|number)=>{
+  device.value = ''
   const IsoCode = country.value?.find(i=>i.value === value)
   phoneCode.value = IsoCode?.phoneCode as string
+  device.value = IsoCode?.device as string;
   await ArticleStore.checkCitySelect(IsoCode?.isoCode as string)
-}
 
+}
+onMounted(async()=>{
+await ArticleStore.checkCountrySelect()
+await store.checkPro();
+})
 </script>
 <template>
   <div class="p-8 card" v-loading.fullscreen.lock="loading">

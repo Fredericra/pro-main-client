@@ -1,25 +1,25 @@
 <script lang="ts" setup>
 import { Service } from '@element-plus/icons-vue';
 import NewLetter from '../Admin/NewLetter.vue';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import { userStore } from '../../../Auth/Store';
-import type { letter, User } from '../../../Type';
+import type { letter } from '../../../Type';
 import ConfirmMessage from '../../../Components/Message/ConfirmMessage.vue';
+import MessageInvite from '../../../Components/Message/MessageInvite.vue';
+import { storeToRefs } from 'pinia';
+import { storeArticle } from '../../../Auth/article';
 
 const store = userStore()
+const store2 = storeArticle()
 const newLetter = ref<letter[]>([])
 
-defineProps<{
-    user:User
-}>()
+const { getUser } = storeToRefs(store)
+
 onMounted(async () => {
-    const resLetter = await store.Geting('getletter');
-    newLetter.value = resLetter.data as letter[];
+    await store.checkAuth()
+    await store2.checkNewLetter()
 })
-watch({ newLetter }, async () => {
-    const resLetter = await store.Geting('getletter');
-    newLetter.value = resLetter.data as letter[];
-})
+
 </script>
 <template>
     <el-tabs type="border-card" class="min-h-screen">
@@ -31,14 +31,14 @@ watch({ newLetter }, async () => {
                 </el-icon>
             </template>
         </el-tab-pane>
-        <el-tab-pane>
+        <el-tab-pane v-if="getUser?.set?.admin">
             <template #label>
                 <span>Message</span>
                 <el-icon class="mx-2">
                     <i class="fas fa-envelope"></i>
                 </el-icon>
             </template>
-
+            <message-invite></message-invite>
         </el-tab-pane>
         <el-tab-pane>
             <template #label>
@@ -48,7 +48,7 @@ watch({ newLetter }, async () => {
                 </el-icon>
             </template>
         </el-tab-pane>
-        <el-tab-pane v-if="user.set?.admin">
+        <el-tab-pane v-if="getUser?.set?.admin">
             <template #label>
                 <span>News letter</span>
                 <el-icon class="mx-2">
@@ -57,9 +57,9 @@ watch({ newLetter }, async () => {
                     </el-icon>
                 </el-icon>
             </template>
-            <new-letter :letter="newLetter" />
+            <new-letter/>
         </el-tab-pane>
-         <el-tab-pane v-if="user.set?.admin">
+         <el-tab-pane v-if=" getUser?.set?.admin">
             <template #label>
                 <span>Personalise confirmation</span>
                 <el-icon class="mx-2">
