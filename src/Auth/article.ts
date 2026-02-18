@@ -1,6 +1,6 @@
-import currency, { number } from "currency-codes-ts";
+import currency from "currency-codes-ts";
 import { defineStore } from "pinia";
-import type { Article, carouselle, letter, message, messageLetter, publication, select, store } from "../Type";
+import type { Article, carouselle, letter, messageLetter, publication, select, store } from "../Type";
 import { userStore } from "./Store";
 import { City, Country, type ICity, type ICountry } from "country-state-city";
 const store = userStore();

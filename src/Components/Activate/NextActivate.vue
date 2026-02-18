@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { Plus, Ticket } from '@element-plus/icons-vue';
 import Input from '../Input.vue';
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import type { select, Validation } from '../../Type';
-import { userStore } from '../../Auth/Store';
 import Select from '../Select.vue';
 import { storeArticle } from '../../Auth/article';
 
@@ -17,7 +16,6 @@ const cvv = ref<Validation>();
 const lieu = ref<Validation>();
 const pays = ref<Validation>();
 const city = ref<Validation>();
-const store = userStore()
 const form = reactive<Record<string, string | number>>({
     name: "",
     number: "",

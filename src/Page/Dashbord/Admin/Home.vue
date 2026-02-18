@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import { Bell, CircleCheckFilled, Message, PictureRounded, Service, UserFilled } from '@element-plus/icons-vue';
 import ConfirmMessage from '../../../Components/Message/ConfirmMessage.vue';
-import { ref } from 'vue';
 import Caroussel from '../../../Components/Dashbord/Caroussel.vue';
 
-const confirm = ref<string>('')
 
 </script>
 <template>

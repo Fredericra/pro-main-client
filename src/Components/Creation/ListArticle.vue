@@ -46,7 +46,7 @@ const deleteSelection = async()=>{
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="expand">
             <template #default="scope">
-                    
+                    {{ scope.row }}
             </template>
         </el-table-column>
         <el-table-column label="titre">

@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue';
 import Head from './Components/Head.vue';
 import { userStore } from './Auth/Store';
-import { useRoute } from 'vue-router';
 import Footer from './Components/Footer/Footer.vue';
 import { storeToRefs } from 'pinia';
 

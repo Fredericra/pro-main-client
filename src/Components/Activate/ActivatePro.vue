@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { pro, select, Validation } from "../../Type";
+import type { pro, Validation } from "../../Type";
 import { onMounted, reactive, ref } from "vue";
 import { userStore } from "../../Auth/Store";
 import Utility from "../../Utility";
