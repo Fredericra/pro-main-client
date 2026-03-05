@@ -149,6 +149,8 @@ export interface Article {
   priceI:number;
   quantity: number;
   set: imgArticle[];
+  user?:User;
+  pro?:setPro;
 }
 
 export interface imgArticle {
@@ -243,6 +245,7 @@ export interface state {
 
 export interface store {
   article:Article[];
+  allarticle:Article[];
   pub:publication[];
   country:select[];
   city:select[];

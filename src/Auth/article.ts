@@ -16,9 +16,13 @@ export const storeArticle = defineStore("store", {
     currentCountry:null,
     Carouselle:null,
     newletter:null,
-    vente:0
+    vente:0,
+    allarticle:[]
   }),
   getters: {
+    getAllArticle:(state)=>{
+      return state.allarticle
+    },
     getNewLetter:(state)=>{
       return state.newletter
     },
@@ -50,6 +54,15 @@ export const storeArticle = defineStore("store", {
     }
   },
   actions: {
+    async checkAllArticle():Promise<void>{
+      try {
+        const res = await store.Geting("getallarticle");
+        this.allarticle = res.data as Article[];
+      } catch (error) {
+        this.allarticle = []
+        console.log(error)
+      }
+    },
     async checkVente():Promise<void>{
       await this.checkArticle();
      this.vente = this.article.reduce((sum,item)=>{

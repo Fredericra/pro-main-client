@@ -20,7 +20,7 @@ const acceptRoute = computed(()=>{
 })
 </script>
 <template>
-    <div v-loading.fullscreen.lock="loading" class="min-h-screen flex flex-col justify-between">
+    <div v-loading.fullscreen.lock="loading" class="min-h-screen flex flex-col justify-between overflow-x-hidden">
         <div>
             <Head 
             :pro="getPro" 
