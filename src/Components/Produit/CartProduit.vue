@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Message, Picture, Plus, ShoppingCart } from '@element-plus/icons-vue';
+import { Message, Phone, Picture, Plus, ShoppingCart } from '@element-plus/icons-vue';
 import type { Article } from '../../Type';
 import type { CollapseModelValue } from 'element-plus';
 import { ref } from 'vue';
@@ -85,6 +85,14 @@ const handleChange = (val:CollapseModelValue)=>{
               <div v-html="article.description" class="text-sm"></div>
             </el-collapse-item>
           </el-collapse>
+        </div>
+        <div class="py-2 flex justify-end items-center">
+          <el-button>
+            <el-icon>
+              <Phone/>
+            </el-icon>
+            {{ article.pro?.phone.replace('undefined','+261 ') }}
+          </el-button>
         </div>
         <div class="action-row">
           <el-button type="success" :icon="Message" @click="sendMessage({name: article.pro?.nom as string, img: article.pro?.set?.link as string, user: article.user?.email as string})">
