@@ -33,9 +33,7 @@
 }
 
 @layer base {
-    body {
-        @apply bg-gradient-to-r from-blue-900 to-purple-600;
-    }
+  
     
     input[type="file"]::file-selector-button{
         background: #2c7be5;
