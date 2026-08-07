@@ -15,7 +15,7 @@ const sendMessage = (name: {name: string, img: string, user: string})=>{
 
 <template>
   <el-row :gutter="20">
-    <el-col v-for="article in articles" :key="article._id" :xs="24" :sm="12" :md="12">
+    <el-col v-for="article in articles" :key="article._id" :xs="24" :sm="24" :md="8">
       <el-card shadow="hover" class="product-card">
         <template #header>
           <div class="card-header">
@@ -35,7 +35,7 @@ const sendMessage = (name: {name: string, img: string, user: string})=>{
         <div class="image-wrapper">
              <el-image
         ref="imageRef"
-        style="width: auto; height: 400px; border-radius: 14px"
+        style="width: auto; max-height: 300px; border-radius: 14px"
         :src="article.set[0]?.links"
         show-progress
         :preview-src-list="article.set.map((item)=>item.links)"
@@ -50,7 +50,7 @@ const sendMessage = (name: {name: string, img: string, user: string})=>{
             <el-tag type="primary" effect="light">{{ article.model }}</el-tag>
             <el-tag type="success" effect="light">{{ article.price.toLocaleString() }} {{ article.device }}</el-tag>
           </div>
-          <div class="h-12 overflow-hidden overflow-x-scroll" v-html="article.description"></div>
+          <div v-html="article.description"></div>
         </div>
         <div class="action-row">
           <el-button type="success" :icon="Message" @click="sendMessage({name: article.pro?.nom as string, img: article.pro?.set?.link as string, user: article.user?.email as string})">
