@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import { Message, Picture, Plus, ShoppingCart } from '@element-plus/icons-vue';
 import type { Article } from '../../Type';
+import type { CollapseModelValue } from 'element-plus';
+import { ref } from 'vue';
 
 const props = defineProps<{
   articles: Article[]
 }>()
+
+const activeNames = ref([])
 const emit = defineEmits<{
   (e: 'message', name: {name: string, img: string, user: string}): void
 }>()
 const sendMessage = (name: {name: string, img: string, user: string})=>{
   emit('message', name)
 }
+const handleChange = (val:CollapseModelValue)=>{
+  console.log(val)
+}
+
+
 </script>
 
 <template>
@@ -42,7 +51,7 @@ const sendMessage = (name: {name: string, img: string, user: string})=>{
           </div>
           <el-image
             ref="imageRef"
-            style="width: auto; max-height: 300px; border-radius: 14px"
+            style="width: auto; max-height: 250px; border-radius: 14px"
             :src="article.set[0]?.links"
             show-progress
             :preview-src-list="article.set.map((item)=>item.links)"
@@ -61,7 +70,21 @@ const sendMessage = (name: {name: string, img: string, user: string})=>{
             <el-tag type="primary" effect="light">{{ article.model }}</el-tag>
             <el-tag type="success" effect="light">{{ article.price.toLocaleString() }} {{ article.device }}</el-tag>
           </div>
-          <div v-html="article.description" class="text-sm"></div>
+          <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse-item>
+              <template #title>
+                <div class="text-center flex justify-center items-center space-x-4 text-blue-400">
+                  <div>
+                    Veuillez ouvrire  pour voir description de produit
+                  </div>
+                  <el-icon>
+                    <Plus/>
+                  </el-icon>
+                </div>
+              </template>
+              <div v-html="article.description" class="text-sm"></div>
+            </el-collapse-item>
+          </el-collapse>
         </div>
         <div class="action-row">
           <el-button type="success" :icon="Message" @click="sendMessage({name: article.pro?.nom as string, img: article.pro?.set?.link as string, user: article.user?.email as string})">

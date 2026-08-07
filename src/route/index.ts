@@ -4,7 +4,7 @@ import loading from "../Auth/loading";
 
 const routes = [
     {name:"Home",path:"/",component:()=>import("../Page/Home.vue")},
-    {name:"About",path:"/about",component:()=>import("../Page/Visitor/About.vue"),meta:{requireAuth:true}},
+    {name:"About",path:"/about",component:()=>import("../Page/Visitor/About.vue")},
     {name:"Contact",path:"/contact",component:()=>import("../Page/Visitor/ContactUs.vue")},
     {name:"Add",path:"/add",component:()=>import("../Page/Visitor/Add.vue")},
     {name:"Login",path:"/login",component:()=>import("../Page/Attemp/Login.vue"),meta:{verify:true}},
