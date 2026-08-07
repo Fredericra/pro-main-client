@@ -20,7 +20,7 @@ export const storeArticle = defineStore("store", {
     allarticle:[]
   }),
   getters: {
-    getAllArticle:(state):Article[]=>{
+    getAllArticle:(state)=>{
       return state.allarticle
     },
     getNewLetter:(state)=>{

@@ -67,7 +67,7 @@ const addArticle = async () => {
     heigth.value?.validate()
     width.value?.validate()
     length.value?.validate()
-    const sizes = Utility.file(form.file, 2,4);
+    const sizes = Utility.file(form.file, 4,4);
     const formUpdate = new FormData();
     if(description.value === "" || description.value === undefined){
         error.value = 'veuillez rempliz le descripton';

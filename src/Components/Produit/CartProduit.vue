@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Message, Plus, ShoppingCart } from '@element-plus/icons-vue';
+import { Message, Picture, Plus, ShoppingCart } from '@element-plus/icons-vue';
 import type { Article } from '../../Type';
 
 const props = defineProps<{
@@ -33,14 +33,21 @@ const sendMessage = (name: {name: string, img: string, user: string})=>{
         </template>
 
         <div class="image-wrapper">
-             <el-image
-        ref="imageRef"
-        style="width: auto; max-height: 300px; border-radius: 14px"
-        :src="article.set[0]?.links"
-        show-progress
-        :preview-src-list="article.set.map((item)=>item.links)"
-        fit="scale-down"
-      />
+          <div class="flex justify-end mr-5 mt-2">
+            <el-badge :value="`${article.set.length}`">
+              <el-icon :size="20">
+                <Picture/>
+              </el-icon>
+            </el-badge>
+          </div>
+          <el-image
+            ref="imageRef"
+            style="width: auto; max-height: 300px; border-radius: 14px"
+            :src="article.set[0]?.links"
+            show-progress
+            :preview-src-list="article.set.map((item)=>item.links)"
+            fit="scale-down"
+          />
         </div>
         <div class="product-content">
           <div class="text-center font-bold text-lg mb-2">
@@ -69,6 +76,7 @@ const sendMessage = (name: {name: string, img: string, user: string})=>{
 </template>
 
 <style scoped>
+
 .product-card {
   margin: 12px 0;
   border-radius: 16px;

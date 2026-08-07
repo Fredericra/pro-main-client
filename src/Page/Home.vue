@@ -89,7 +89,7 @@ onMounted(async()=>{
     </template>
   </el-drawer>
   <el-carousel :interval="4000" arrow="always" height="800px" >
-    <el-carousel-item v-for="(value,index) in getCarouselle" style="height:800px" :key="index">
+    <el-carousel-item v-for="(value,index) in getCarouselle" style="max-height:800px" :key="index">
       <el-image :src="value.image" fit="cover" class="h-auto w-full"  show-progress>
       </el-image>
     </el-carousel-item>
