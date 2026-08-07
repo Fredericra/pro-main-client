@@ -32,29 +32,36 @@ const props = defineProps<{
         </div>
 
         <!-- Column 2: Publications -->
-        <div class="col-span-1">
+        <div class="col-span-1 space-y-8">
             <el-card v-if="props.article.length > 0" v-for="(item, index) in props.article" :key="index">
                 <template #header>
                     <div class="card-header">
                         <div class="flex justify-between items-center">
-                            <div class="relative">
+                            <div class="relative text-[10px]">
                                 <el-avatar :src="props.pro.set?.link"></el-avatar>
-                                <span class="absolute -top-1 text-sm text-blue-600 text-nowrap">{{ props.pro.nom
+                                <span class="absolute -top-1 text-[10px] text-blue-600 text-nowrap">{{ props.pro.nom
                                 }}</span>
                             </div>
                             <div>
-                                <span class="font-semibold">{{ item.title }}</span>
+                                <el-tag>
+                                    {{ item.title }}
+                                </el-tag>
                             </div>
                         </div>
                     </div>
                 </template>
                 <div class="ql-editor ql">
-                    <div v-html="item.description"></div>
+                    <div v-html="item.description" class="text-sm"></div>
                 </div>
                 <div class="demo-image__preview overflow-hidden">
-                    <el-image v-for="(img, key) in item.set" style="width: 30vw; height: 40vh" :src="img.links"
-                        :zoom-rate="1.2" :max-scale="7" :min-scale="0.2" :preview-src-list="item.set.map(img=>img.links)" show-progress
-                        :initial-index="key" fit="cover" />
+                    <el-image
+            ref="imageRef"
+            style="width: auto; max-height: 300px; border-radius: 14px"
+            :src="item.set[0]?.links"
+            show-progress
+            :preview-src-list="item.set.map((item)=>item.links)"
+            fit="scale-down"
+          />
                 </div>
             </el-card>
             <el-card v-else>

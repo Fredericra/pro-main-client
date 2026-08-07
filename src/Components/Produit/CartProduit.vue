@@ -49,15 +49,19 @@ const sendMessage = (name: {name: string, img: string, user: string})=>{
             fit="scale-down"
           />
         </div>
-        <div class="product-content">
+        <div class="product-content space-y-1">
           <div class="text-center font-bold text-lg mb-2">
             <h2>{{ article.title }}</h2>
+          </div>
+          <div class="space-x-4">
+            <el-tag type="warning"> {{ article.category }}</el-tag>
+            <el-tag type="warning"> {{ article.device }}</el-tag>
           </div>
           <div class="product-head">
             <el-tag type="primary" effect="light">{{ article.model }}</el-tag>
             <el-tag type="success" effect="light">{{ article.price.toLocaleString() }} {{ article.device }}</el-tag>
           </div>
-          <div v-html="article.description"></div>
+          <div v-html="article.description" class="text-sm"></div>
         </div>
         <div class="action-row">
           <el-button type="success" :icon="Message" @click="sendMessage({name: article.pro?.nom as string, img: article.pro?.set?.link as string, user: article.user?.email as string})">
