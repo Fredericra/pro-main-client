@@ -255,7 +255,6 @@ export interface store {
   Carouselle:carouselle[]|null;
   newletter:letter[]|null,
   vente:number;
-  intervaleTimeResponse:number;
 }
 
 export interface carouselle {

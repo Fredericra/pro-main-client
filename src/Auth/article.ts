@@ -1,9 +1,11 @@
 import currency from "currency-codes-ts";
-import { defineStore } from "pinia";
+import { createPinia, defineStore } from "pinia";
 import type { Article, carouselle, letter, messageLetter, publication, select, store } from "../Type";
 import { userStore } from "./Store";
 import { City, Country, type ICity, type ICountry } from "country-state-city";
-const store = userStore();
+const pinia = createPinia()
+const store = userStore(pinia);
+
 
 export const storeArticle = defineStore("store", {
   state: (): store => ({
@@ -18,7 +20,6 @@ export const storeArticle = defineStore("store", {
     newletter:null,
     vente:0,
     allarticle:[],
-    intervaleTimeResponse:0
   }),
   getters: {
     getAllArticle:(state)=>{
@@ -56,11 +57,8 @@ export const storeArticle = defineStore("store", {
   },
   actions: {
     async checkAllArticle():Promise<void>{
-      const start = performance.now()
       try {
         const res = await store.Geting("getallarticle");
-        const end = performance.now()
-        this.intervaleTimeResponse = end - start; 
         this.allarticle = res.data as Article[];
       } catch (error) {
         this.allarticle = []

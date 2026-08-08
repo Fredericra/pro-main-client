@@ -7,19 +7,18 @@ import { storeToRefs } from "pinia";
 import { storeArticle } from "./Auth/article.ts";
 
 const loading = ref<boolean>(true);
-const loadTime = ref<number>();
 const store = userStore();
 const Article = storeArticle()
 const { getUser, isAuth, getPro, auth } = storeToRefs(store);
 
 onMounted(async () => {
-    setTimeout(() => {
-    }, loadTime.value)
-    await store.checkAuth();
-    await Article.checkAllArticle().then(()=>{
-        loading.value = false
+    await Article.checkAllArticle().then(async()=>{
+        await store.checkAuth().then(async()=>{
+            await store.checkPro().then(()=>{
+                loading.value = false
+            })
+        });
     })
-    await store.checkPro()
 
 });
 const acceptRoute = computed(() => {
