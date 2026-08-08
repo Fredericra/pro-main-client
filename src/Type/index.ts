@@ -254,7 +254,8 @@ export interface store {
   currentCountry:select|select[]|null;
   Carouselle:carouselle[]|null;
   newletter:letter[]|null,
-  vente:number
+  vente:number;
+  intervaleTimeResponse:number;
 }
 
 export interface carouselle {

@@ -17,7 +17,8 @@ export const storeArticle = defineStore("store", {
     Carouselle:null,
     newletter:null,
     vente:0,
-    allarticle:[]
+    allarticle:[],
+    intervaleTimeResponse:0
   }),
   getters: {
     getAllArticle:(state)=>{
@@ -55,8 +56,11 @@ export const storeArticle = defineStore("store", {
   },
   actions: {
     async checkAllArticle():Promise<void>{
+      const start = performance.now()
       try {
         const res = await store.Geting("getallarticle");
+        const end = performance.now()
+        this.intervaleTimeResponse = end - start; 
         this.allarticle = res.data as Article[];
       } catch (error) {
         this.allarticle = []
