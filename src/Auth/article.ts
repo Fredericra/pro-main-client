@@ -3,6 +3,7 @@ import { createPinia, defineStore } from "pinia";
 import type { Article, carouselle, letter, messageLetter, publication, select, store } from "../Type";
 import { userStore } from "./Store";
 import { City, Country, type ICity, type ICountry } from "country-state-city";
+import loading from "./loading";
 const pinia = createPinia()
 const store = userStore(pinia);
 
@@ -58,8 +59,10 @@ export const storeArticle = defineStore("store", {
   actions: {
     async checkAllArticle():Promise<void>{
       try {
+        loading.startLoading()
         const res = await store.Geting("getallarticle");
         this.allarticle = res.data as Article[];
+        loading.closeLoading()
       } catch (error) {
         this.allarticle = []
         console.log(error)

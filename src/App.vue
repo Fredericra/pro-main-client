@@ -12,6 +12,7 @@ const Article = storeArticle()
 const { getUser, isAuth, getPro, auth } = storeToRefs(store);
 
 onMounted(async () => {
+    loading.value = true;
     await Article.checkAllArticle().then(async()=>{
         await store.checkAuth().then(async()=>{
             await store.checkPro().then(()=>{
@@ -29,7 +30,6 @@ const acceptRoute = computed(() => {
 <template>
     <div v-loading.fullscreen.lock="loading" class="min-h-screen flex flex-col justify-between overflow-x-hidden">
         <div>
-
             <Head :pro="getPro" :user="getUser" :isAuth="isAuth" />
             <router-view />
         </div>
