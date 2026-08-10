@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Message, Phone, User as UserIcon } from '@element-plus/icons-vue';
 import type { setPro, User } from '../../Type';
+import FormModificationSetting from '../../Components/Setting/FormModificationSetting.vue';
 
 
 const props = defineProps<{
@@ -65,6 +66,18 @@ const props = defineProps<{
                                     </el-tag>
                                 </li>
                             </ul>
+                        </div>
+                    </el-card>
+                </el-col>
+                <el-col :xs="24" :sm="12" :md="16">
+                    <el-card>
+                        <template #header>
+                            <div class="text-center">
+                                Modifier mon profil
+                            </div>
+                        </template>
+                        <div v-if="props.set.getPro!==null">
+                            <FormModificationSetting :pro="set.getPro as setPro" :user="set.getUser as User"/>
                         </div>
                     </el-card>
                 </el-col>
