@@ -91,7 +91,7 @@ const handleChange = (val:CollapseModelValue)=>{
             <el-icon>
               <Phone/>
             </el-icon>
-            {{ article.pro?.phone.replace('undefined','+261 ') }}
+            {{ article.pro?.phone }}
           </el-button>
         </div>
         <div class="action-row">
