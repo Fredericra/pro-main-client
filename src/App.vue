@@ -20,7 +20,6 @@ onMounted(async () => {
             })
         });
     })
-    loading.value = false
 
 });
 const acceptRoute = computed(() => {
