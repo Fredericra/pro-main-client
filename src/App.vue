@@ -28,9 +28,11 @@ const acceptRoute = computed(() => {
 });
 </script>
 <template>
-    <div v-loading.fullscreen.lock="loading" class="min-h-screen flex flex-col justify-between overflow-x-hidden">
-        <div>
-            <Head :pro="getPro" :user="getUser" :isAuth="isAuth" />
+    <div v-loading.fullscreen.lock="loading" class="min-h-screen flex flex-col justify-between overflow-x-hidden relative">
+        <div class="header">
+            <Head :pro="getPro" :user="getUser" :isAuth="isAuth"/>
+        </div>
+        <div class="mt-16">
             <router-view />
         </div>
         <Footer v-if="acceptRoute" class="mt-20 bg-gray-600" />
